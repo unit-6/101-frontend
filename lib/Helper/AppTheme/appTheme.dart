@@ -1,0 +1,25 @@
+import 'package:flutter/material.dart';
+
+class AppThemeGlobal {
+  static ThemeData appThemeGlobal = themeData();
+  static ThemeData themeData(){
+    return ThemeData(
+      brightness: Brightness.light,
+      primaryColor: Colors.grey[850],
+      accentColor: Colors.black87,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+
+      // Define the default font family.
+      fontFamily: 'bubble_rainbow',
+
+      // Define the default TextTheme. Use this to specify the default
+      // text styling for headlines, titles, bodies of text, and more.
+      textTheme: TextTheme(
+        headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+        headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+        bodyText1: TextStyle(fontSize: 20.0),
+        bodyText2: TextStyle(fontSize: 14.0),
+      ),
+    );
+  }
+}
