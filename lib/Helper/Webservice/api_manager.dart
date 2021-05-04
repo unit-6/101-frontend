@@ -142,5 +142,19 @@ class ApiManager extends ChangeNotifier {
     return returnMsg;
   }
 
+  Future listProducts(String mid) async {
+    String urlString = baseUrl + '/api/merchant/listProduct';
+    var returnMsg;
+
+    Map<String, dynamic> body = {
+      'merchant_id': mid
+    };
+    
+    await postRequest(urlString, json.encode(body)).then((res) {
+      returnMsg = returnResponse(res);
+    });
+    return returnMsg;
+  }
+
   //===================================== END API ===================================================//
 }

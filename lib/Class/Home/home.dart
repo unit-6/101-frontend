@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
 import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
-// import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
+import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
+import 'package:sbit_mobile/Model/data_singleton.dart';
+import 'package:sbit_mobile/Model/product.dart';
 
 ApiManager apiManager;
 
@@ -28,19 +31,40 @@ class _HomeState extends State<Home> {
         'subtitle': 'Stock Qty: 50',
         'price': 'RM 2.80'
       },
-      
     ];
 
   //===================================== [START] API SERVICES ===================================================//
-
-  
+ 
+  Future onListProducts(String mid) async {
+    Future.delayed(Duration.zero, () => DialogHelper.loadingDialog(context));
+    await apiManager.listProducts(mid).then((res) {
+      Navigator.of(context).pop();
+      onReadResponse(true, res);
+    }).catchError((res) {
+      Navigator.of(context).pop();
+      onReadResponse(false, res);
+    });
+  }
 
   //===================================== [END] API SERVICES ===================================================//
+  
+  void onReadResponse(bool status, res) {
+    if (status) {
+      if (res['code'] == 200) {
+        setState(() {
+          DataSingleton.shared.productData = Product.fromJson(res);
+        });
+      }
+    } else {
+      // error status, enhance later
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     apiManager = Provider.of<ApiManager>(context, listen: false);
+    onListProducts(GlobalVariable.merchantID);
   }
 
   @override
@@ -86,7 +110,6 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
-
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.only(left: 32.0),
@@ -99,14 +122,14 @@ class _HomeState extends State<Home> {
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 21.0),
-                    child: ListView.separated(
+                    child: DataSingleton.shared.productData == null || DataSingleton.shared.productData.data.isEmpty ? Center(child: Text('Products Not Found', style: TextStyle(fontSize: 20.0)),) : ListView.separated(
                       primary: false,
-                      itemCount: settingArr.length,
+                      itemCount: DataSingleton.shared.productData.data?.length ?? 0,
                       itemBuilder:(context, index){
                         return ListTile(
-                          title: Text(settingArr[index]['title'], style: TextStyle(fontWeight: FontWeight.bold),),
-                          subtitle: Text(settingArr[index]['subtitle']),
-                          trailing: Text(settingArr[index]['price']),
+                          title: Text(DataSingleton.shared.productData.data[index].name, style: TextStyle(fontWeight: FontWeight.bold),),
+                          subtitle: Text('Stock Qty: '+DataSingleton.shared.productData.data[index].stockQty.toString()),
+                          trailing: Text(DataSingleton.shared.productData.data[index].currencySymbol+' '+DataSingleton.shared.productData.data[index].salesPrice),
                         );
                       },
                       separatorBuilder: (context, index) {
@@ -115,11 +138,6 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
-
-
-
-
-
               ],
             ),
           ),
