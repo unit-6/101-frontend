@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sbit_mobile/Helper/Webservice/app_exception.dart';
 
-String baseUrl = "https://jsonplaceholder.typicode.com";
+String baseUrl = 'https://sbit.dimensikini.xyz/';
 
 class ApiManager extends ChangeNotifier {
 
@@ -123,37 +123,17 @@ class ApiManager extends ChangeNotifier {
   //===== [END] RETURNED RESPONSE =====//
 
   //===================================== START API =================================================//
-
-  Future getAllPosts() async {
-    String urlString = baseUrl + '/posts';
-    var returnMsg;
-
-    await getRequest(urlString).then((res) {
-      returnMsg = returnResponse(res);
-    });
-
-    return returnMsg;
-  }
-
-  Future getPostByID(String id) async {
-    String urlString = baseUrl + '/posts/'+id;
-    var returnMsg;
-
-    await getRequest(urlString).then((res) {
-      returnMsg = returnResponse(res);
-    });
-
-    return returnMsg;
-  }
-
-  Future postAllPosts() async {
-    String urlString = baseUrl + '/posts';
+  
+  Future merchantRegister(String udid, String phoneModel, String osVersion, String platform, String appVersion) async {
+    String urlString = baseUrl + '/api/merchant/register';
     var returnMsg;
 
     Map<String, dynamic> body = {
-      'title': 'foo',
-      'body': 'bar',
-      'userId': 1,
+      'udid': udid,
+      'phoneModel': phoneModel,
+      'osVersion': osVersion,
+      'platform': platform,
+      'appVersion': appVersion
     };
 
     await postRequest(urlString, json.encode(body)).then((res) {
@@ -161,9 +141,6 @@ class ApiManager extends ChangeNotifier {
     });
     return returnMsg;
   }
-
-
-
 
   //===================================== END API ===================================================//
 }

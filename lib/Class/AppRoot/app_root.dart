@@ -1,8 +1,18 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_udid/flutter_udid.dart';
 import 'package:package_info/package_info.dart';
+import 'package:device_info/device_info.dart';
+import 'package:provider/provider.dart';
 import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
+import 'package:sbit_mobile/Helper/Helper/helper.dart';
 import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
+import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
+
+ApiManager apiManager;
 
 class AppRoot extends StatelessWidget {
   @override
@@ -22,9 +32,30 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
+  //===================================== [START] API SERVICES ===================================================//
+  Future onMerchantRegister(String udid, String phoneModel, String osVersion, String platform, String appVersion) async {
+    await apiManager.merchantRegister(udid, phoneModel, osVersion, platform, appVersion).then((res) {
+      onReadResponse(true, res);
+    }).catchError((res) {
+      onReadResponse(false, res);
+    });
+  }
+  //===================================== [END] API SERVICES ===================================================//
+
+  void onReadResponse(bool status, res) {
+    if (status) {
+      if (res['code'] == 200) {
+        GlobalVariable().addMerchantID('key_merchant_id', res['merchant_id']);
+      }
+    } else {
+      // error status, enhance later
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    apiManager = Provider.of<ApiManager>(context, listen: false);
     
     Future.delayed(Duration(seconds: 3), () {
       checkLoginStatus();
@@ -55,10 +86,63 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkAppInfo() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    String deviceData, osVersion, platform;
 
-    GlobalVariable.setAppVersion = packageInfo.version;
-    GlobalVariable.setBuildNumber = packageInfo.buildNumber;
+    PackageInfo packageInfo;
+    String udid;
+
+    try {
+      udid = await FlutterUdid.udid;
+      packageInfo = await PackageInfo.fromPlatform();
+
+      GlobalVariable.udid = udid;
+      GlobalVariable.appVersion = packageInfo.version;
+      GlobalVariable.buildNumber = packageInfo.buildNumber;
+      GlobalVariable().deleteAll();
+
+      if (Platform.isAndroid) {
+        debugPrint('Android Platform');
+
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        deviceData = androidInfo.model;
+        osVersion = androidInfo.version.release;
+        platform = 'Android';
+
+        GlobalVariable.platform = 'Android';
+        GlobalVariable.phoneModel = deviceData;
+        GlobalVariable.osVersion = osVersion;
+      }
+
+      if (Platform.isIOS) {
+        debugPrint('iOS Platform');
+
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        deviceData = Helper.instance.iOSDeviceName(iosInfo.utsname.machine);
+        osVersion = iosInfo.systemVersion;
+        platform = 'iOS';
+
+        GlobalVariable.platform = 'iOS';
+        GlobalVariable.phoneModel = deviceData;
+        GlobalVariable.osVersion = osVersion;
+      }
+    } on PlatformException {
+      udid = 'Failed to get UDID.';
+    }
+
+    debugPrint('UDID: ' + udid);
+    debugPrint('APP VERSION: ' + packageInfo.version);
+    debugPrint('BUILD NUMBER: ' + packageInfo.buildNumber);
+    debugPrint('PHONE MODEL: ' + deviceData);
+    debugPrint('OS VERSION: ' + osVersion);
+
+    GlobalVariable().readMerchantID().then((value) {
+      if (value != null) {
+        GlobalVariable.merchantID = value;
+      } else {
+        onMerchantRegister(udid, deviceData, osVersion, platform, packageInfo.version);
+      }
+    });
   }
 
   @override
