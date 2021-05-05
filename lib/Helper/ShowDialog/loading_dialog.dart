@@ -16,7 +16,7 @@ class LoadingDialog extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index) {
                   return DecoratedBox(
                     decoration: BoxDecoration(
-                      color: index.isEven ? Colors.green[200] : Colors.green[200],
+                      color: index.isEven ? Colors.grey[850] : Colors.grey[850],
                       shape: BoxShape.circle,
                     ),
                   );

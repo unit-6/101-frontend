@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
@@ -5,6 +8,7 @@ import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
 import 'package:sbit_mobile/Model/data_singleton.dart';
 import 'package:sbit_mobile/Model/product.dart';
+import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 
 ApiManager apiManager;
 
@@ -17,21 +21,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   final costCtrl = TextEditingController();
-
-   var settingArr = [
-      {
-        'id': '0',
-        'title':'Burger Daging',
-        'subtitle': 'Stock Qty: 40',
-        'price': 'RM 2.70'
-      },
-      {
-        'id': '1',
-        'title':'Burger Ayam',
-        'subtitle': 'Stock Qty: 50',
-        'price': 'RM 2.80'
-      },
-    ];
 
   //===================================== [START] API SERVICES ===================================================//
  
@@ -71,7 +60,24 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return WillPopScope(
       child: Scaffold(
-        appBar: AppBar(title: Text('Dashboard')),
+        appBar: AppBar(
+          title: Text('Dashboard'),
+          actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.add_business,
+              color: Colors.white,
+              size: 21.0,
+            ),
+            onPressed: () {
+              ExtendedNavigator.ofRouter<ModuleRouter.Router>()
+                  .pushNamed(ModuleRouter.Routes.newProduct).then((value) {
+                    onListProducts(GlobalVariable.merchantID);
+                  });
+            },
+          ),
+        ],
+        ),
         body: SafeArea(
           child: Container(
             child: Column(

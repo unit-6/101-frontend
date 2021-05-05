@@ -46,6 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (status) {
       if (res['code'] == 200) {
         GlobalVariable().addMerchantID('key_merchant_id', res['merchant_id']);
+        GlobalVariable.merchantID = res['merchant_id'];
       }
     } else {
       // error status, enhance later

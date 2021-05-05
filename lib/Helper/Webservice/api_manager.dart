@@ -149,7 +149,26 @@ class ApiManager extends ChangeNotifier {
     Map<String, dynamic> body = {
       'merchant_id': mid
     };
-    
+
+    await postRequest(urlString, json.encode(body)).then((res) {
+      returnMsg = returnResponse(res);
+    });
+    return returnMsg;
+  }
+
+  Future addProduct(String name, String salesPrice, String currencyCode, String currencySymbol, String stockQty, String mid) async {
+    String urlString = baseUrl + '/api/merchant/addProduct';
+    var returnMsg;
+
+    Map<String, dynamic> body = {
+      'name': name,
+      'salesPrice': salesPrice,
+      'currencyCode': currencyCode,
+      'currencySymbol': currencySymbol,
+      'stockQty': stockQty,
+      'merchant_id': mid
+    };
+
     await postRequest(urlString, json.encode(body)).then((res) {
       returnMsg = returnResponse(res);
     });
