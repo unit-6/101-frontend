@@ -1,4 +1,0 @@
-#Wed May 05 13:23:45 MYT 2021
-base.0=/Users/abdul.qayyum/Desktop/Workspace/GitHub/101-frontend/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
