@@ -6,6 +6,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
 import 'package:sbit_mobile/Helper/Helper/helper.dart';
+import 'package:sbit_mobile/Helper/Routes/router.gr.dart';
 import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
 import 'package:sbit_mobile/Model/data_singleton.dart';
@@ -50,6 +51,10 @@ class _HomeState extends State<Home> {
     } else {
       // error status, enhance later
     }
+  }
+
+  onTapClicked(int id) {
+    ExtendedNavigator.ofRouter<ModuleRouter.Router>().pushNamed(ModuleRouter.Routes.detailsProduct, arguments: DetailsProductArguments(productId: id));
   }
 
   @override
@@ -170,6 +175,9 @@ class _HomeState extends State<Home> {
                               ],
                             ),
                           ),
+                          onTap: () {
+                            onTapClicked(DataSingleton.shared.productData.data[index].id); 
+                          },   
                         );
                       },
                       separatorBuilder: (context, index) {
