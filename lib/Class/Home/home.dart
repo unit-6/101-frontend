@@ -11,6 +11,7 @@ import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
 import 'package:sbit_mobile/Model/data_singleton.dart';
 import 'package:sbit_mobile/Model/product.dart';
 import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
+import 'package:badges/badges.dart';
 
 ApiManager apiManager;
 
@@ -149,7 +150,26 @@ class _HomeState extends State<Home> {
                         return ListTile(
                           title: Text(DataSingleton.shared.productData.data[index].name, style: TextStyle(fontWeight: FontWeight.bold),),
                           subtitle: Text('Stock Qty: '+DataSingleton.shared.productData.data[index].stockQty.toString()),
-                          trailing: Text(DataSingleton.shared.productData.data[index].currencySymbol+' '+DataSingleton.shared.productData.data[index].salesPrice),
+                          trailing: SizedBox(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Badge(
+                                  elevation: 0,
+                                  toAnimate: false,
+                                  shape: BadgeShape.square,
+                                  badgeColor: DataSingleton.shared.productData.data[index].isActive == 1 ? Colors.green : Colors.amber,
+                                  borderRadius: BorderRadius.circular(4),
+                                  badgeContent: DataSingleton.shared.productData.data[index].isActive == 1 ? Text('ACTIVE', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)) : Text('INACTIVE', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: Text(DataSingleton.shared.productData.data[index].currencySymbol+' '+DataSingleton.shared.productData.data[index].salesPrice),
+                                ),
+                              ],
+                            ),
+                          ),
                         );
                       },
                       separatorBuilder: (context, index) {
