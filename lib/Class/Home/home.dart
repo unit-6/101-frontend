@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
+import 'package:sbit_mobile/Helper/Helper/helper.dart';
 import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
 import 'package:sbit_mobile/Model/data_singleton.dart';
@@ -53,7 +55,13 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     apiManager = Provider.of<ApiManager>(context, listen: false);
-    onListProducts(GlobalVariable.merchantID);
+    Helper.instance.checkInternet().then((intenet) {
+      if(intenet != null && intenet) {
+        onListProducts(GlobalVariable.merchantID);
+      } else {
+        DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+      }
+    }); 
   }
 
   @override
@@ -72,7 +80,13 @@ class _HomeState extends State<Home> {
             onPressed: () {
               ExtendedNavigator.ofRouter<ModuleRouter.Router>()
                   .pushNamed(ModuleRouter.Routes.newProduct).then((value) {
-                    onListProducts(GlobalVariable.merchantID);
+                    Helper.instance.checkInternet().then((intenet) {
+                      if(intenet != null && intenet) {
+                        onListProducts(GlobalVariable.merchantID);
+                      } else {
+                        DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+                      }
+                    });
                   });
             },
           ),
