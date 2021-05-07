@@ -10,7 +10,7 @@ class AppThemeGlobal {
       visualDensity: VisualDensity.adaptivePlatformDensity,
 
       // Define the default font family.
-      fontFamily: 'bubble_rainbow',
+      fontFamily: 'montserrat',
 
       // Define the default TextTheme. Use this to specify the default
       // text styling for headlines, titles, bodies of text, and more.

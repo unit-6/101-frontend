@@ -95,6 +95,9 @@ flutter:
     - family: bubble_rainbow
       fonts:
         - asset: assets/fonts/BubbleRainbow/Bubble-Rainbow.ttf
+    - family: montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat/Montserrat-Regular.ttf
         
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
