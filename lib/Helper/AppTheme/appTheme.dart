@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:sbit_mobile/Helper/AppTheme/appColors.dart';
 
 class AppThemeGlobal {
   static ThemeData appThemeGlobal = themeData();
   static ThemeData themeData(){
     return ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.grey[850],
-      accentColor: Colors.black87,
+      primaryColor: Colors.white,
+      accentColor: Colors.white,
       visualDensity: VisualDensity.adaptivePlatformDensity,
+      scaffoldBackgroundColor: AppColors.bgColorScreen,
 
       // Define the default font family.
       fontFamily: 'montserrat',

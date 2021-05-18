@@ -83,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // GlobalVariable().removeTerminalSecret();
     // GlobalVariable().removePassCode();
 
-    ExtendedNavigator.ofRouter<ModuleRouter.Router>().pushReplacementNamed(ModuleRouter.Routes.home);
+    ExtendedNavigator.ofRouter<ModuleRouter.Router>().pushReplacementNamed(ModuleRouter.Routes.dashboard);
   }
 
   void checkAppInfo() async {

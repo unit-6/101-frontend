@@ -9,17 +9,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:sbit_mobile/Class/AppRoot/app_root.dart';
 import 'package:sbit_mobile/Class/Home/home.dart';
+import 'package:sbit_mobile/Class/Dashboard/dashboard.dart';
 import 'package:sbit_mobile/Class/Product/new_product.dart';
 import 'package:sbit_mobile/Class/Product/details_product.dart';
 
 abstract class Routes {
   static const approot = '/';
   static const home = '/home';
+  static const dashboard = '/dashboard';
   static const newProduct = '/new-product';
   static const detailsProduct = '/details-product';
   static const all = {
     approot,
     home,
+    dashboard,
     newProduct,
     detailsProduct,
   };
@@ -45,6 +48,11 @@ class Router extends RouterBase {
       case Routes.home:
         return MaterialPageRoute<dynamic>(
           builder: (context) => Home(),
+          settings: settings,
+        );
+      case Routes.dashboard:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => Dashboard(),
           settings: settings,
         );
       case Routes.newProduct:

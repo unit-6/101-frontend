@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
+import 'package:sbit_mobile/Helper/AppTheme/appColors.dart';
+import 'package:sbit_mobile/Helper/Component/input.dart';
+import 'package:sbit_mobile/Helper/Component/navbar.dart';
 import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
 import 'package:sbit_mobile/Helper/Helper/helper.dart';
 import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
@@ -42,7 +44,7 @@ class _NewProduct extends State<NewProduct> {
     if (status) {
       if (res['code'] == 200) {
         DialogHelper.customDialog(context, 'Success', res['message'], () { 
-        ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.home));
+        ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
       });
       }
     } else {
@@ -82,9 +84,13 @@ class _NewProduct extends State<NewProduct> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
+      
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Add New Product')
+        appBar: Navbar(
+          title: 'New Product',
+          noShadow: true,
+          rightOptions: false,
+          backButton: true
         ),
         body: SafeArea(
           child: Container(
@@ -96,98 +102,90 @@ class _NewProduct extends State<NewProduct> {
                     child: Form(
                       child: Column(
                         children: <Widget>[
-                          SizedBox(
-                            height: 32.0,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4.0, top: 32),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('Product name',
+                                  style: TextStyle(
+                                      color: AppColors.text,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16)),
+                            ),
                           ),
-                          Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.symmetric(horizontal: 2.0),
-                            child: TextFormField(
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Input(
+                              placeholder: 'e.g. Burger Ayam, Burger Daging',
                               controller: nameCtrl,
-                              autocorrect: false,
-                              keyboardType: TextInputType.text,
-                              keyboardAppearance: Brightness.light,
-                              textInputAction: TextInputAction.next,
-                              textAlign: TextAlign.left,
-                              style: new TextStyle(
-                                  fontSize: 16.0, fontWeight: FontWeight.normal),
-                              decoration: const InputDecoration(
-                                  labelText: 'PRODUCT NAME',
-                                  hintText: 'e.g. Burger Ayam, Burger Daging',
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.symmetric(vertical: 23.0, horizontal: 10.0),
-                                  border: OutlineInputBorder(),
-                                  counterText: ''),
+                              keyboardType: 00,
+                              textInputAction: 01,
                               onChanged: (value) => {},
                             ),
                           ),
-                          SizedBox(
-                            height: 8.0,
+
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4.0, top: 16),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('Sales Price (RM)',
+                                  style: TextStyle(
+                                      color: AppColors.text,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16)),
+                            ),
                           ),
-                          Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.symmetric(horizontal: 2.0),
-                            child: TextFormField(
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Input(
+                              placeholder: 'e.g. 2.70, 3.20',
                               controller: salePriceCtrl,
-                              autocorrect: false,
-                              keyboardType: TextInputType.numberWithOptions(decimal: true),
-                              inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9.,]+')),],
-                              keyboardAppearance: Brightness.light,
-                              textInputAction: TextInputAction.next,
-                              textAlign: TextAlign.left,
-                              style: new TextStyle(
-                                  fontSize: 16.0, fontWeight: FontWeight.normal),
-                              decoration: const InputDecoration(
-                                  labelText: 'SALES PRICE (RM)',
-                                  hintText: 'e.g. 2.70, 3.20',
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.symmetric(vertical: 23.0, horizontal: 10.0),
-                                  border: OutlineInputBorder(),
-                                  counterText: ''),
+                              keyboardType: 03,
+                              textInputAction: 01,
+                              onChanged: (value) => {},
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4.0, top: 16),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('Stock Quantity',
+                                  style: TextStyle(
+                                      color: AppColors.text,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16)),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Input(
+                              placeholder: 'e.g. 30, 40',
+                              controller: stockQtyCtrl,
+                              keyboardType: 01,
+                              textInputAction: 00,
                               onChanged: (value) => {},
                             ),
                           ),
                           SizedBox(
-                            height: 8.0,
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.symmetric(horizontal: 2.0),
-                            child: TextFormField(
-                              controller: stockQtyCtrl,
-                              autocorrect: false,
-                              keyboardType: TextInputType.number,
-                              keyboardAppearance: Brightness.light,
-                              textInputAction: TextInputAction.done,
-                              textAlign: TextAlign.left,
-                              style: new TextStyle(
-                                  fontSize: 16.0, fontWeight: FontWeight.normal),
-                              decoration: const InputDecoration(
-                                  labelText: 'STOCK QUANTITY',
-                                  hintText: 'e.g. 30, 40',
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.symmetric(vertical: 23.0, horizontal: 10.0),
-                                  border: OutlineInputBorder(),
-                                  counterText: ''),
-                              onChanged: (value) => {},
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 32),
+                              child: RaisedButton(
+                                textColor: AppColors.white,
+                                color: AppColors.initial,
+                                onPressed: () {
+                                  onPressed();
+                                },
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0),),
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 12, bottom: 12),
+                                  child: Text('Add New', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0))
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 80.0,
-                    padding: const EdgeInsets.symmetric(horizontal: 21.0, vertical: 16.0),
-                    child: RaisedButton(
-                      child: Text('Add', style: TextStyle(fontSize: 20.0)),
-                      color: Colors.pink,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(6.0)),
-                      onPressed: () {
-                        onPressed();
-                      }
                     ),
                   ),
                 ],

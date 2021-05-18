@@ -156,7 +156,7 @@ class _HomeState extends State<Home> {
                           title: Text(DataSingleton.shared.productData.data[index].name, style: TextStyle(fontWeight: FontWeight.bold),),
                           subtitle: Text('Stock Qty: '+DataSingleton.shared.productData.data[index].stockQty.toString()),
                           trailing: SizedBox(
-                            width: 100,
+                            width: MediaQuery.of(context).size.width * 0.3,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
