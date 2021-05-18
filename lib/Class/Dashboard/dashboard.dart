@@ -145,9 +145,9 @@ class _DashboardState extends State<Dashboard> {
                                 elevation: 0,
                                 toAnimate: false,
                                 shape: BadgeShape.square,
-                                badgeColor: AppColors.info,
+                                badgeColor: DataSingleton.shared.productData.data[index].stockQty <= 1 ? AppColors.error : (DataSingleton.shared.productData.data[index].stockQty >= 2 && DataSingleton.shared.productData.data[index].stockQty <= 7 ? AppColors.warning : AppColors.info ),
                                 borderRadius: BorderRadius.circular(4),
-                                badgeContent: Text('Stock Qty: '+DataSingleton.shared.productData.data[index].stockQty.toString(), style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold))
+                                badgeContent: Text(DataSingleton.shared.productData.data[index].stockQty.toString(), style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold))
                               ),
                               SizedBox(width: 2.0,),
                               Badge(
@@ -156,7 +156,7 @@ class _DashboardState extends State<Dashboard> {
                                 shape: BadgeShape.square,
                                 badgeColor: DataSingleton.shared.productData.data[index].isActive == 1 ? Colors.green : Colors.amber,
                                 borderRadius: BorderRadius.circular(4),
-                                badgeContent: DataSingleton.shared.productData.data[index].isActive == 1 ? Text('Active', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)) : Text('Inactive', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)),
+                                badgeContent: DataSingleton.shared.productData.data[index].isActive == 1 ? Text('active', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)) : Text('inactive', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)),
                               ),
                             ],
                           ),
