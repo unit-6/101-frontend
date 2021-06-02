@@ -84,7 +84,6 @@ class _NewProduct extends State<NewProduct> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      
       child: Scaffold(
         appBar: Navbar(
           title: 'New Product',
