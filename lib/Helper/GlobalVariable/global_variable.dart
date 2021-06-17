@@ -12,6 +12,8 @@ class GlobalVariable {
   static String osVersion;
   static String phoneModel;
   static String merchantID;
+  static int salesID;
+  static int salesStatus;
 
   Future deleteAll() async {
     try {
@@ -35,5 +37,27 @@ class GlobalVariable {
     debugPrint('key_merchant_id : ' + keyMerchantID.toString());
 
     return keyMerchantID;
+  }
+
+  Future addSalesID(String keyString, String valueString) async {
+    await GlobalVariable.storage.write(key: keyString, value: valueString);
+  }
+
+  Future readSalesID() async {
+    String keySalesID =  await GlobalVariable.storage.read(key: 'key_sales_id');
+    debugPrint('key_sales_id : ' + keySalesID.toString());
+
+    return keySalesID;
+  }
+
+  Future addSalesStatus(String keyString, String valueString) async {
+    await GlobalVariable.storage.write(key: keyString, value: valueString);
+  }
+
+  Future readSalesStatus() async {
+    String keySalesStatus =  await GlobalVariable.storage.read(key: 'key_sales_status');
+    debugPrint('key_sales_status : ' + keySalesStatus.toString());
+
+    return keySalesStatus;
   }
 }

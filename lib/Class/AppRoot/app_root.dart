@@ -144,6 +144,16 @@ class _SplashScreenState extends State<SplashScreen> {
         onMerchantRegister(udid, deviceData, osVersion, platform, packageInfo.version);
       }
     });
+
+    GlobalVariable().readSalesID().then((value) {
+      if (value != null) 
+        GlobalVariable.salesID = int.parse(value);
+    });
+
+    GlobalVariable().readSalesStatus().then((value) {
+      if (value != null) 
+        GlobalVariable.salesStatus = int.parse(value);
+    });
   }
 
   @override

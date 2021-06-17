@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:sbit_mobile/Helper/Component/navbar.dart';
+import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
 import 'package:sbit_mobile/Helper/Provider/counter_bloc.dart';
 // import 'package:sbit_mobile/Helper/Component/input.dart';
 // import 'package:sbit_mobile/Helper/Helper/helper.dart';
@@ -52,6 +53,14 @@ class _Sales extends State<Sales> {
     super.initState();
     apiManager = Provider.of<ApiManager>(context, listen: false);
     counterBloc = Provider.of<CounterBloc>(context, listen: false);
+
+    debugPrint('salesID: '+GlobalVariable.salesID.toString()+', salesStatus: '+GlobalVariable.salesStatus.toString());
+
+    GlobalVariable().addSalesID('key_sales_id', null);
+    GlobalVariable.salesID = null;
+
+    GlobalVariable().addSalesStatus('key_sales_status', null);
+    GlobalVariable.salesStatus = null;
   }
 
   @override

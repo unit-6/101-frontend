@@ -72,6 +72,21 @@ class _DashboardState extends State<Dashboard> {
           setState(() {
             DataSingleton.shared.productData = Product.fromJson(res);
           });
+
+          if(GlobalVariable.salesStatus != null) {
+            if(GlobalVariable.salesStatus == 1) {
+              ExtendedNavigator.ofRouter<ModuleRouter.Router>()
+              .pushNamed(ModuleRouter.Routes.sales).then((value) {
+                Helper.instance.checkInternet().then((intenet) {
+                  if(intenet != null && intenet) {
+                    onListProducts(GlobalVariable.merchantID);
+                  } else {
+                    DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+                  }
+                });
+              });
+            }
+          }
         }
       } else {
         // error status, enhance later
@@ -80,7 +95,24 @@ class _DashboardState extends State<Dashboard> {
     if(isStartSales) {
       if (status) {
         if (res['code'] == 200) {
-          
+          debugPrint(res['message']);
+
+          GlobalVariable().addSalesID('key_sales_id', res['sale_id'].toString());
+          GlobalVariable.salesID = res['sale_id'];
+
+          GlobalVariable().addSalesStatus('key_sales_status', res['status'].toString());
+          GlobalVariable.salesStatus = res['status'];
+
+          ExtendedNavigator.ofRouter<ModuleRouter.Router>()
+            .pushNamed(ModuleRouter.Routes.sales).then((value) {
+              Helper.instance.checkInternet().then((intenet) {
+                if(intenet != null && intenet) {
+                  onListProducts(GlobalVariable.merchantID);
+                } else {
+                  DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+                }
+              });
+            });
         }
       } else {
         // error status, enhance later
@@ -110,39 +142,25 @@ class _DashboardState extends State<Dashboard> {
           'Enter your current cost (RM)',
         () => { Navigator.of(context).pop() },
         () { 
-
-
-          // if(costCtrl.text.isNotEmpty) {
-          //   debugPrint('costCtrl=${costCtrl.text}');
-          //   Helper.instance.checkInternet().then((intenet) {
-          //   if(intenet != null && intenet) {
-          //     onStartSales(
-          //       costCtrl.text,
-          //       'MYR',
-          //       'RM',
-          //       GlobalVariable.merchantID
-          //     );
-          //   } else {
-          //     DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
-          //   }
-          // });
-          // }
-          // else {
-          //   DialogHelper.customDialog(context, 'Empty Field', 'Please enter empty field', () => { Navigator.of(context).pop() });
-          // }
-
-
           Navigator.of(context).pop();
-          ExtendedNavigator.ofRouter<ModuleRouter.Router>()
-            .pushNamed(ModuleRouter.Routes.sales).then((value) {
-              Helper.instance.checkInternet().then((intenet) {
-                if(intenet != null && intenet) {
-                  onListProducts(GlobalVariable.merchantID);
-                } else {
-                  DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
-                }
-              });
-            });
+          if(costCtrl.text.isNotEmpty) {
+            debugPrint('costCtrl=${costCtrl.text}');
+            Helper.instance.checkInternet().then((intenet) {
+            if(intenet != null && intenet) {
+              onStartSales(
+                costCtrl.text,
+                'MYR',
+                'RM',
+                GlobalVariable.merchantID
+              );
+            } else {
+              DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+            }
+          });
+          }
+          else {
+            DialogHelper.customDialog(context, 'Empty Field', 'Please enter empty field', () => { Navigator.of(context).pop() });
+          }
         },
         Input(
           placeholder: 'e.g. 2.70, 3.20, 60.0',
