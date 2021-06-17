@@ -1,19 +1,21 @@
-// import 'package:auto_route/auto_route.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:sbit_mobile/Helper/Component/navbar.dart';
 import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
 import 'package:sbit_mobile/Helper/Provider/counter_bloc.dart';
 // import 'package:sbit_mobile/Helper/Component/input.dart';
-// import 'package:sbit_mobile/Helper/Helper/helper.dart';
+import 'package:sbit_mobile/Helper/Helper/helper.dart';
 import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 import 'package:sbit_mobile/Model/data_singleton.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
-// import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
+import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 
 ApiManager apiManager;
 CounterBloc counterBloc;
+
+bool isAddTrx, isEndSales;
 
 class Sales extends StatefulWidget {
 
@@ -24,16 +26,43 @@ class Sales extends StatefulWidget {
 class _Sales extends State<Sales> {
   
   //===================================== [START] API SERVICES ===================================================//
+
+  Future onAddTrx(String qty, String currencyCode, String currencySymbol, String productId, String saleId) async {
+
+    isAddTrx = true;
+    isEndSales = false;
+
+    Future.delayed(Duration.zero, () => DialogHelper.loadingDialog(context));
+    await apiManager.addTrx(qty, currencyCode, currencySymbol, productId, saleId).then((res) {
+      Navigator.of(context).pop();
+      onReadResponse(true, res);
+    }).catchError((res) {
+      Navigator.of(context).pop();
+      onReadResponse(false, res);
+    });
+  }
  
   
 
   //===================================== [END] API SERVICES ===================================================//
   
   void onReadResponse(bool status, res) {
-   
+    if(isAddTrx){
+      if (status) {
+        if (res['code'] == 200) {
+          DialogHelper.customDialog(context, 'Success', res['message'], () { 
+            ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
+          });
+        }
+      }
+    }
+
+    if(isEndSales){
+      
+    }
   }
 
-  void onPressed(String productName) {
+  void onPressed(String productName, int prodId) {
     counterBloc.reset();
     DialogHelper.quantityDialog(
       context,
@@ -41,9 +70,20 @@ class _Sales extends State<Sales> {
         '',
       () => { Navigator.of(context).pop() },
       () { 
-
-        
-          debugPrint(counterBloc.counter.toString());
+          Navigator.of(context).pop();
+          Helper.instance.checkInternet().then((intenet) {
+          if(intenet != null && intenet) {
+            onAddTrx(
+              counterBloc.counter.toString(),
+              'MYR',
+              'RM',
+              prodId.toString(),
+              GlobalVariable.salesID.toString()
+            );
+          } else {
+            DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+          }
+        });
       },
     );
   }
@@ -56,11 +96,14 @@ class _Sales extends State<Sales> {
 
     debugPrint('salesID: '+GlobalVariable.salesID.toString()+', salesStatus: '+GlobalVariable.salesStatus.toString());
 
-    GlobalVariable().addSalesID('key_sales_id', null);
-    GlobalVariable.salesID = null;
+    isAddTrx = false;
+    isEndSales = false;
 
-    GlobalVariable().addSalesStatus('key_sales_status', null);
-    GlobalVariable.salesStatus = null;
+    // GlobalVariable().addSalesID('key_sales_id', null);
+    // GlobalVariable.salesID = null;
+
+    // GlobalVariable().addSalesStatus('key_sales_status', null);
+    // GlobalVariable.salesStatus = null;
   }
 
   @override
@@ -86,7 +129,7 @@ class _Sales extends State<Sales> {
                   child: Card(
                     child: InkWell(
                       onTap: (){ 
-                        onPressed(DataSingleton.shared.productData.data[index].name);
+                        onPressed(DataSingleton.shared.productData.data[index].name, DataSingleton.shared.productData.data[index].id);
                       },
                       child: Column(
                         children: [
