@@ -226,5 +226,37 @@ class ApiManager extends ChangeNotifier {
     return returnMsg;
   }
 
+  Future addTrx(String qty, String currencyCode, String currencySymbol, String productId, String saleId) async {
+    String urlString = baseUrl + '/api/merchant/addTrx';
+    var returnMsg;
+
+    Map<String, dynamic> body = {
+      'qty': qty,
+      'currencyCode': currencyCode,
+      'currencySymbol': currencySymbol,
+      'product_id': productId,
+      'sale_id': saleId
+    };
+    
+    await postRequest(urlString, json.encode(body)).then((res) {
+      returnMsg = returnResponse(res);
+    });
+    return returnMsg;
+  }
+
+  Future endSales(String saleId) async {
+    String urlString = baseUrl + '/api/merchant/endSales';
+    var returnMsg;
+
+    Map<String, dynamic> body = {
+      'sale_id': saleId
+    };
+    
+    await postRequest(urlString, json.encode(body)).then((res) {
+      returnMsg = returnResponse(res);
+    });
+    return returnMsg;
+  }
+
   //===================================== END API ===================================================//
 }
