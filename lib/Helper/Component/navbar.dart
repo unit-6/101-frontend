@@ -21,6 +21,7 @@ class Navbar extends StatefulWidget implements PreferredSizeWidget {
   final Color bgColor;
   final Function onTapOne;
   final Function onTapTwo;
+  final bool noButton;
 
   Navbar(
       {this.title = "Home",
@@ -39,7 +40,9 @@ class Navbar extends StatefulWidget implements PreferredSizeWidget {
       this.bgColor = AppColors.white,
       this.searchBar = false, 
       this.onTapOne, 
-      this.onTapTwo}
+      this.onTapTwo,
+      this.noButton = false
+      }
     );
 
   final double _prefferedHeight = 180.0;
@@ -102,9 +105,9 @@ class _NavbarState extends State<Navbar> {
                       children: [
                         IconButton(
                             icon: Icon(
-                                !widget.backButton
-                                    ? Icons.menu
-                                    : Icons.arrow_back_ios,
+                                widget.backButton
+                                    ? Icons.arrow_back_ios
+                                    : (widget.noButton ? Icons.business : Icons.menu),
                                 color: !widget.transparent
                                     ? (widget.bgColor == AppColors.white
                                         ? AppColors.initial
@@ -112,10 +115,12 @@ class _NavbarState extends State<Navbar> {
                                     : AppColors.white,
                                 size: 24.0),
                             onPressed: () {
-                              if (!widget.backButton)
-                                Scaffold.of(context).openDrawer();
-                              else
+                              if (widget.backButton)
                                 Navigator.pop(context);
+                              else if (widget.noButton)
+                                debugPrint('salesmode...');
+                              else
+                                Scaffold.of(context).openDrawer();
                             }),
                         Text(widget.title,
                             style: TextStyle(

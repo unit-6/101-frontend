@@ -62,7 +62,7 @@ class _Sales extends State<Sales> {
           title: 'Sales',
           noShadow: true,
           rightOptions: false,
-          backButton: true
+          noButton: true,
         ),
         body: SafeArea(
           child: Container(
