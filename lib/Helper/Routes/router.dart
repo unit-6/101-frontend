@@ -7,7 +7,9 @@ import 'package:sbit_mobile/Class/AppRoot/app_root.dart';
 import 'package:sbit_mobile/Class/Dashboard/dashboard.dart';
 import 'package:sbit_mobile/Class/Home/home.dart';
 import 'package:sbit_mobile/Class/Product/details_product.dart';
+import 'package:sbit_mobile/Class/Product/edit_product.dart';
 import 'package:sbit_mobile/Class/Product/new_product.dart';
+import 'package:sbit_mobile/Class/Sales/sales.dart';
 
 @MaterialAutoRouter()
 class $Router {
@@ -17,4 +19,6 @@ class $Router {
   Dashboard dashboard;
   NewProduct newProduct;
   DetailsProduct detailsProduct;
+  EditProduct editProduct;
+  Sales sales;
 }

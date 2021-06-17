@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:sbit_mobile/Helper/AppTheme/appColors.dart';
+import 'package:sbit_mobile/Helper/Component/input.dart';
 // import 'package:sbit_mobile/Helper/Component/drawer.dart';
 import 'package:sbit_mobile/Helper/Component/navbar.dart';
 import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
@@ -18,6 +19,7 @@ import 'package:sbit_mobile/Model/product.dart';
 import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 
 ApiManager apiManager;
+bool isListProducts, isStartSales;
 
 class Dashboard extends StatefulWidget {
 
@@ -32,8 +34,27 @@ class _DashboardState extends State<Dashboard> {
   //===================================== [START] API SERVICES ===================================================//
  
   Future onListProducts(String mid) async {
+
+    isListProducts = true;
+    isStartSales = false;
+
     Future.delayed(Duration.zero, () => DialogHelper.loadingDialog(context));
     await apiManager.listProducts(mid).then((res) {
+      Navigator.of(context).pop();
+      onReadResponse(true, res);
+    }).catchError((res) {
+      Navigator.of(context).pop();
+      onReadResponse(false, res);
+    });
+  }
+
+  Future onStartSales(String cost, String currencyCode, String currencySymbol, String mid) async {
+
+    isListProducts = false;
+    isStartSales = true;
+
+    Future.delayed(Duration.zero, () => DialogHelper.loadingDialog(context));
+    await apiManager.startSales(cost, currencyCode, currencySymbol, mid).then((res) {
       Navigator.of(context).pop();
       onReadResponse(true, res);
     }).catchError((res) {
@@ -45,25 +66,104 @@ class _DashboardState extends State<Dashboard> {
   //===================================== [END] API SERVICES ===================================================//
   
   void onReadResponse(bool status, res) {
-    if (status) {
-      if (res['code'] == 200) {
-        setState(() {
-          DataSingleton.shared.productData = Product.fromJson(res);
-        });
+    if(isListProducts){
+      if (status) {
+        if (res['code'] == 200) {
+          setState(() {
+            DataSingleton.shared.productData = Product.fromJson(res);
+          });
+        }
+      } else {
+        // error status, enhance later
       }
-    } else {
-      // error status, enhance later
+    } 
+    if(isStartSales) {
+      if (status) {
+        if (res['code'] == 200) {
+          
+        }
+      } else {
+        // error status, enhance later
+      }
     }
   }
 
   onTapClicked(int id) {
-    ExtendedNavigator.ofRouter<ModuleRouter.Router>().pushNamed(ModuleRouter.Routes.detailsProduct, arguments: DetailsProductArguments(productId: id));
+    ExtendedNavigator.ofRouter<ModuleRouter.Router>()
+      .pushNamed(ModuleRouter.Routes.detailsProduct, arguments: DetailsProductArguments(productId: id)).then((value) {
+        Helper.instance.checkInternet().then((intenet) {
+          if(intenet != null && intenet) {
+            onListProducts(GlobalVariable.merchantID);
+          } else {
+            DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+          }
+        });
+      });
+  }
+
+  onPressed(String status) {
+    if(status == 'startsales') {
+      debugPrint('startsales clicked');
+      DialogHelper.inputDialog(
+        context,
+          'Start Sales',
+          'Enter your current cost (RM)',
+        () => { Navigator.of(context).pop() },
+        () { 
+
+
+          // if(costCtrl.text.isNotEmpty) {
+          //   debugPrint('costCtrl=${costCtrl.text}');
+          //   Helper.instance.checkInternet().then((intenet) {
+          //   if(intenet != null && intenet) {
+          //     onStartSales(
+          //       costCtrl.text,
+          //       'MYR',
+          //       'RM',
+          //       GlobalVariable.merchantID
+          //     );
+          //   } else {
+          //     DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+          //   }
+          // });
+          // }
+          // else {
+          //   DialogHelper.customDialog(context, 'Empty Field', 'Please enter empty field', () => { Navigator.of(context).pop() });
+          // }
+
+
+          Navigator.of(context).pop();
+          ExtendedNavigator.ofRouter<ModuleRouter.Router>()
+            .pushNamed(ModuleRouter.Routes.sales).then((value) {
+              Helper.instance.checkInternet().then((intenet) {
+                if(intenet != null && intenet) {
+                  onListProducts(GlobalVariable.merchantID);
+                } else {
+                  DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+                }
+              });
+            });
+        },
+        Input(
+          placeholder: 'e.g. 2.70, 3.20, 60.0',
+          controller: costCtrl,
+          keyboardType: 03,
+          textInputAction: 01,
+          autofocus: true,
+          onChanged: (value) => {},
+        ),
+      );
+    }
   }
 
   @override
   void initState() {
     super.initState();
     apiManager = Provider.of<ApiManager>(context, listen: false);
+
+    isListProducts = false;
+    isStartSales = false;
+
     Helper.instance.checkInternet().then((intenet) {
       if(intenet != null && intenet) {
         onListProducts(GlobalVariable.merchantID);
@@ -108,12 +208,32 @@ class _DashboardState extends State<Dashboard> {
                               color: AppColors.text,
                               fontWeight: FontWeight.w900,
                               fontSize: 21)),
-                      Text('0.00',
+                      Text(DataSingleton.shared.productData == null || DataSingleton.shared.productData.data.isEmpty ? '0.00' : DataSingleton.shared.productData.totalProfit.toString(),
                           style: TextStyle(
                               color: AppColors.success,
                               fontWeight: FontWeight.w100,
                               fontSize: 32)),
                     ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    child: RaisedButton(
+                      textColor: AppColors.white,
+                      color: AppColors.label,
+                      onPressed: () {
+                        onPressed('startsales');
+                      },
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(21.0),),
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 12, bottom: 12),
+                        child: Text('Start Sales', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0))
+                      ),
+                    ),
                   ),
                 ),
               ),

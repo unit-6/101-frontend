@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sbit_mobile/Helper/Webservice/app_exception.dart';
 
-String baseUrl = 'https://sbit.dimensikini.xyz/';
+String baseUrl = 'https://sbit.dimensikini.xyz';
 
 class ApiManager extends ChangeNotifier {
 
@@ -183,6 +183,43 @@ class ApiManager extends ChangeNotifier {
       'id': productId.toString()
     };
 
+    await postRequest(urlString, json.encode(body)).then((res) {
+      returnMsg = returnResponse(res);
+    });
+    return returnMsg;
+  }
+
+  Future editProduct(int id, String name, String salesPrice, String currencyCode, String currencySymbol, String stockQty, int isActive) async {
+    String urlString = baseUrl + '/api/merchant/editProduct';
+    var returnMsg;
+
+    Map<String, dynamic> body = {
+      'id': id,
+      'name': name,
+      'salesPrice': salesPrice,
+      'currencyCode': currencyCode,
+      'currencySymbol': currencySymbol,
+      'stockQty': stockQty,
+      'isActive': isActive
+    };
+
+    await postRequest(urlString, json.encode(body)).then((res) {
+      returnMsg = returnResponse(res);
+    });
+    return returnMsg;
+  }
+
+  Future startSales(String cost, String currencyCode, String currencySymbol, String mid) async {
+    String urlString = baseUrl + '/api/merchant/startSales';
+    var returnMsg;
+
+    Map<String, dynamic> body = {
+      'cost': cost,
+      'currencyCode': currencyCode,
+      'currencySymbol': currencySymbol,
+      'merchant_id': mid
+    };
+    
     await postRequest(urlString, json.encode(body)).then((res) {
       returnMsg = returnResponse(res);
     });

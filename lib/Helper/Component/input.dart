@@ -13,6 +13,7 @@ class Input extends StatelessWidget {
   final bool autocorrect;
   final int keyboardType;
   final int textInputAction;
+  final String errorText;
 
   Input(
       {this.placeholder,
@@ -25,7 +26,8 @@ class Input extends StatelessWidget {
       this.controller, 
       this.autocorrect = false, 
       this.keyboardType,
-      this.textInputAction
+      this.textInputAction, 
+      this.errorText,
   });
 
   @override
@@ -44,6 +46,15 @@ class Input extends StatelessWidget {
             TextStyle(height: 0.85, fontSize: 14.0, color: AppColors.initial),
         textAlignVertical: TextAlignVertical(y: 0.6),
         decoration: InputDecoration(
+            errorText: errorText,
+            // errorBorder: OutlineInputBorder(
+            //   borderRadius: BorderRadius.all(Radius.circular(4)),
+            //   borderSide: BorderSide(width: 1,color: AppColors.inputError)
+            // ),
+            // focusedErrorBorder: OutlineInputBorder(
+            //   borderRadius: BorderRadius.all(Radius.circular(4)),
+            //   borderSide: BorderSide(width: 1,color: AppColors.inputError)
+            // ),
             filled: true,
             fillColor: AppColors.white,
             hintStyle: TextStyle(

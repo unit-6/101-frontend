@@ -1,12 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:badges/badges.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
+import 'package:sbit_mobile/Class/Product/edit_product.dart';
 import 'package:sbit_mobile/Helper/AppTheme/appColors.dart';
 import 'package:sbit_mobile/Helper/Component/navbar.dart';
 import 'package:sbit_mobile/Helper/Helper/helper.dart';
 import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
+import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 
 ApiManager apiManager;
 String productName = '';
@@ -14,6 +18,10 @@ String salesPrice = '';
 int stockQty = 0;
 int isActive = 0;
 String createdAt = '';
+String updatedAt = '';
+String currencyCode = '';
+String currencySymbol = '';
+int id;
 
 class DetailsProduct extends StatefulWidget {
 
@@ -47,15 +55,36 @@ class _DetailsProduct extends State<DetailsProduct> {
       if (res['code'] == 200) {
         setState(() {
           productName = res['data']['name'];
-          salesPrice = res['data']['currencySymbol']+' '+res['data']['salesPrice'];
+          salesPrice = res['data']['salesPrice'];
           stockQty = res['data']['stockQty'];
           isActive = res['data']['isActive'];
           createdAt = res['data']['created_at'];
+          updatedAt = res['data']['updated_at'];
+          currencyCode = res['data']['currencyCode'];
+          currencySymbol = res['data']['currencySymbol'];
+          id = res['data']['id'];
         });
       }
     } else {
       // error status, enhance later
     }
+  }
+
+  void onPressed() {
+    ExtendedNavigator.ofRouter<ModuleRouter.Router>().push(
+      CupertinoPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => EditProduct(
+          vProdName: productName, 
+          vSalesPrice: salesPrice, 
+          vStockQty: stockQty,
+          vId: id,
+          vIsActive: isActive,
+          vCurrencyCode: currencyCode,
+          vCurrencySymbol: currencySymbol,
+          ),
+      ),
+    );
   }
 
   @override
@@ -127,7 +156,7 @@ class _DetailsProduct extends State<DetailsProduct> {
                           padding: const EdgeInsets.only(left: 4.0, top: 8),
                           child: Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(salesPrice,
+                            child: Text(currencySymbol+' '+salesPrice,
                                 style: TextStyle(
                                     color: AppColors.text,
                                     fontWeight: FontWeight.w300,
@@ -203,6 +232,46 @@ class _DetailsProduct extends State<DetailsProduct> {
                                     fontSize: 15)),
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0, top: 32),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text('Updated At',
+                                style: TextStyle(
+                                    color: AppColors.text,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16)),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0, top: 8),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(updatedAt,
+                                style: TextStyle(
+                                    color: AppColors.text,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 15)),
+                          ),
+                        ),
+                        SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 32),
+                              child: RaisedButton(
+                                textColor: AppColors.white,
+                                color: AppColors.warning,
+                                onPressed: () {
+                                  onPressed();
+                                },
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0),),
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 12, bottom: 12),
+                                  child: Text('Edit', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0))
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),

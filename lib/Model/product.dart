@@ -3,8 +3,9 @@ class Product {
   final String message;
   List<ProductData> data;
   final int total;
+  final int totalProfit;
 
-  Product({this.code, this.message, this.data, this.total});
+  Product({this.code, this.message, this.data, this.total, this.totalProfit});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     var tagObjsJson = json['data'] as List;
@@ -14,7 +15,8 @@ class Product {
       code: json['code'],
       message: json['message'],
       data: _productData,
-      total: json['total']
+      total: json['total'],
+      totalProfit: json['total_profit']
     );
   }
 }
