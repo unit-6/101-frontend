@@ -61,13 +61,16 @@ class InputDialog extends StatelessWidget {
             child: Container(
               alignment: Alignment.topLeft,
               width: double.infinity,
-              child: Text(
-                contentMsg, 
-                style: TextStyle(
-                  fontWeight: FontWeight.normal, 
-                  fontSize: 18.0,
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  contentMsg, 
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal, 
+                    fontSize: 18.0,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
           ),
