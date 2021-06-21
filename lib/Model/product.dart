@@ -3,7 +3,7 @@ class Product {
   final String message;
   List<ProductData> data;
   final int total;
-  final int totalProfit;
+  final double totalProfit;
 
   Product({this.code, this.message, this.data, this.total, this.totalProfit});
 

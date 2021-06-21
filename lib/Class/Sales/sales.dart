@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
+import 'package:sbit_mobile/Helper/AppTheme/appColors.dart';
 import 'package:sbit_mobile/Helper/Component/navbar.dart';
 import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
 import 'package:sbit_mobile/Helper/Provider/counter_bloc.dart';
@@ -41,6 +42,21 @@ class _Sales extends State<Sales> {
       onReadResponse(false, res);
     });
   }
+
+  Future onEndSales(String saleId) async {
+
+    isAddTrx = false;
+    isEndSales = true;
+
+    Future.delayed(Duration.zero, () => DialogHelper.loadingDialog(context));
+    await apiManager.endSales(saleId).then((res) {
+      Navigator.of(context).pop();
+      onReadResponse(true, res);
+    }).catchError((res) {
+      Navigator.of(context).pop();
+      onReadResponse(false, res);
+    });
+  }
  
   
 
@@ -58,7 +74,20 @@ class _Sales extends State<Sales> {
     }
 
     if(isEndSales){
-      
+      if (status) {
+        if (res['code'] == 200) {
+
+          GlobalVariable().addSalesID('key_sales_id', null);
+          GlobalVariable.salesID = null;
+
+          GlobalVariable().addSalesStatus('key_sales_status', null);
+          GlobalVariable.salesStatus = null;
+
+          DialogHelper.customDialog(context, res['message'], 'Today profit: '+ res['profit'].toString(), () { 
+            ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
+          });
+        }
+      }
     }
   }
 
@@ -117,54 +146,93 @@ class _Sales extends State<Sales> {
           noButton: true,
         ),
         body: SafeArea(
-          child: Container(
-            child: GridView.count(
-              primary: false,
-              padding: const EdgeInsets.all(20),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              crossAxisCount: 2,
-              children: List.generate(DataSingleton.shared.productData.data?.length?? 0, (index) {
-                return Container(
-                  child: Card(
-                    child: InkWell(
-                      onTap: (){ 
-                        onPressed(DataSingleton.shared.productData.data[index].name, DataSingleton.shared.productData.data[index].id);
-                      },
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 32),
-                            child: Text(
-                              DataSingleton.shared.productData.data[index].name,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)
-                            ),
+          child: Column(
+            children: [
+              Expanded(
+                child: GridView.count(
+                  primary: false,
+                  padding: const EdgeInsets.all(20),
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  crossAxisCount: 2,
+                  children: List.generate(DataSingleton.shared.productData.data?.length?? 0, (index) {
+                    return Container(
+                      child: Card(
+                        child: InkWell(
+                          onTap: (){ 
+                            onPressed(DataSingleton.shared.productData.data[index].name, DataSingleton.shared.productData.data[index].id);
+                          },
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 32),
+                                child: Text(
+                                  DataSingleton.shared.productData.data[index].name,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text(
+                                  DataSingleton.shared.productData.data[index].currencySymbol+' '+DataSingleton.shared.productData.data[index].salesPrice,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.normal)
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 32),
+                                child: Text(
+                                  'x'+DataSingleton.shared.productData.data[index].stockQty.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.normal)
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              DataSingleton.shared.productData.data[index].currencySymbol+' '+DataSingleton.shared.productData.data[index].salesPrice,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.normal)
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 32),
-                            child: Text(
-                              'x'+DataSingleton.shared.productData.data[index].stockQty.toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.normal)
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        color: Colors.white,
+                        ),
+                    );
+                  }),  
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: RaisedButton(
+                    textColor: AppColors.white,
+                    color: AppColors.initial,
+                    onPressed: () {
+                       DialogHelper.confirmDialog(
+                        context,
+                          'End Sales',
+                          'Are you confirm to end today sales ?',
+                        () => { Navigator.of(context).pop() },
+                        () { 
+                            Navigator.of(context).pop();
+                            Helper.instance.checkInternet().then((intenet) {
+                            if(intenet != null && intenet) {
+                              onEndSales(
+                                GlobalVariable.salesID.toString()
+                              );
+                            } else {
+                              DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+                            }
+                          });
+                        },
+                      );
+                    },
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0),),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 14, bottom: 14),
+                      child: Text('End Sales', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0))
                     ),
-                    color: Colors.white,
-                    ),
-                );
-              }),  
-            )
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
