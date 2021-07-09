@@ -1,9 +1,9 @@
 class Product {
-  final int code;
-  final String message;
-  List<ProductData> data;
-  final int total;
-  final double totalProfit;
+  final int? code;
+  final String? message;
+  List<ProductData>? data;
+  final int? total;
+  final String? totalProfit;
 
   Product({this.code, this.message, this.data, this.total, this.totalProfit});
 
@@ -22,16 +22,16 @@ class Product {
 }
 
 class ProductData {
-  final int id;
-  final String name;
-  final String salesPrice;
-  final String currencyCode;
-  final String currencySymbol;
-  final int stockQty;
-  final int isActive;
-  final String createdAt;
-  final String updatedAt;
-  final String merchantId;
+  final int? id;
+  final String? name;
+  final String? salesPrice;
+  final String? currencyCode;
+  final String? currencySymbol;
+  final int? stockQty;
+  final int? isActive;
+  final String? createdAt;
+  final String? updatedAt;
+  final String? merchantId;
 
   ProductData({
     this.id, 

@@ -23,7 +23,7 @@ class CardSmall extends StatelessWidget {
         child: Container(
       height: 235,
       child: GestureDetector(
-        onTap: tap,
+        onTap: tap as void Function()?,
         child: Card(
             elevation: 0.4,
             shape: RoundedRectangleBorder(

@@ -6,7 +6,6 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
 import 'package:sbit_mobile/Helper/Helper/helper.dart';
-import 'package:sbit_mobile/Helper/Routes/router.gr.dart';
 import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
 import 'package:sbit_mobile/Model/data_singleton.dart';
@@ -14,7 +13,7 @@ import 'package:sbit_mobile/Model/product.dart';
 import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 import 'package:badges/badges.dart';
 
-ApiManager apiManager;
+late ApiManager apiManager;
 
 class Home extends StatefulWidget {
 
@@ -28,7 +27,7 @@ class _HomeState extends State<Home> {
 
   //===================================== [START] API SERVICES ===================================================//
  
-  Future onListProducts(String mid) async {
+  Future onListProducts(String? mid) async {
     Future.delayed(Duration.zero, () => DialogHelper.loadingDialog(context));
     await apiManager.listProducts(mid).then((res) {
       Navigator.of(context).pop();
@@ -53,8 +52,9 @@ class _HomeState extends State<Home> {
     }
   }
 
-  onTapClicked(int id) {
-    ExtendedNavigator.ofRouter<ModuleRouter.Router>().pushNamed(ModuleRouter.Routes.detailsProduct, arguments: DetailsProductArguments(productId: id));
+  onTapClicked(int? id) {
+    // ExtendedNavigator.ofRouter<ModuleRouter.Router>().pushNamed(ModuleRouter.Routes.detailsProduct, arguments: DetailsProductArguments(productId: id));
+    AutoRouter.of(context).push(ModuleRouter.DetailsProduct(productId: id));
   }
 
   @override
@@ -62,7 +62,7 @@ class _HomeState extends State<Home> {
     super.initState();
     apiManager = Provider.of<ApiManager>(context, listen: false);
     Helper.instance.checkInternet().then((intenet) {
-      if(intenet != null && intenet) {
+      if(intenet) {
         onListProducts(GlobalVariable.merchantID);
       } else {
         DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
@@ -84,16 +84,26 @@ class _HomeState extends State<Home> {
               size: 21.0,
             ),
             onPressed: () {
-              ExtendedNavigator.ofRouter<ModuleRouter.Router>()
-                  .pushNamed(ModuleRouter.Routes.newProduct).then((value) {
-                    Helper.instance.checkInternet().then((intenet) {
-                      if(intenet != null && intenet) {
-                        onListProducts(GlobalVariable.merchantID);
-                      } else {
-                        DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
-                      }
-                    });
-                  });
+              // ExtendedNavigator.ofRouter<ModuleRouter.Router>()
+              //     .pushNamed(ModuleRouter.Routes.newProduct).then((value) {
+              //       Helper.instance.checkInternet().then((intenet) {
+              //         if(intenet != null && intenet) {
+              //           onListProducts(GlobalVariable.merchantID);
+              //         } else {
+              //           DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+              //         }
+              //       });
+              //     });
+
+              AutoRouter.of(context).push(ModuleRouter.NewProduct()).then((value) {
+                Helper.instance.checkInternet().then((intenet) {
+                  if(intenet) {
+                    onListProducts(GlobalVariable.merchantID);
+                  } else {
+                    DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+                  }
+                });
+              });
             },
           ),
         ],
@@ -118,13 +128,13 @@ class _HomeState extends State<Home> {
                         ),
                         ButtonBar(
                           children: <Widget>[
-                            FlatButton(
+                            TextButton(
                               child: const Text('START SALES', style: TextStyle(color: Colors.white),),
                               onPressed: () {
                                 print('startsales clicked');
                               },
                             ),
-                            FlatButton(
+                            TextButton(
                               child: const Text('HISTORY', style: TextStyle(color: Colors.white),),
                               onPressed: () {
                                 print('history clicked');
@@ -148,13 +158,13 @@ class _HomeState extends State<Home> {
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 21.0),
-                    child: DataSingleton.shared.productData == null || DataSingleton.shared.productData.data.isEmpty ? Center(child: Text('Products Not Found', style: TextStyle(fontSize: 20.0)),) : ListView.separated(
+                    child: DataSingleton.shared.productData == null || DataSingleton.shared.productData!.data!.isEmpty ? Center(child: Text('Products Not Found', style: TextStyle(fontSize: 20.0)),) : ListView.separated(
                       primary: false,
-                      itemCount: DataSingleton.shared.productData.data?.length ?? 0,
+                      itemCount: DataSingleton.shared.productData!.data?.length ?? 0,
                       itemBuilder:(context, index){
                         return ListTile(
-                          title: Text(DataSingleton.shared.productData.data[index].name, style: TextStyle(fontWeight: FontWeight.bold),),
-                          subtitle: Text('Stock Qty: '+DataSingleton.shared.productData.data[index].stockQty.toString()),
+                          title: Text(DataSingleton.shared.productData!.data![index].name!, style: TextStyle(fontWeight: FontWeight.bold),),
+                          subtitle: Text('Stock Qty: '+DataSingleton.shared.productData!.data![index].stockQty.toString()),
                           trailing: SizedBox(
                             width: MediaQuery.of(context).size.width * 0.3,
                             child: Row(
@@ -164,19 +174,19 @@ class _HomeState extends State<Home> {
                                   elevation: 0,
                                   toAnimate: false,
                                   shape: BadgeShape.square,
-                                  badgeColor: DataSingleton.shared.productData.data[index].isActive == 1 ? Colors.green : Colors.amber,
+                                  badgeColor: DataSingleton.shared.productData!.data![index].isActive == 1 ? Colors.green : Colors.amber,
                                   borderRadius: BorderRadius.circular(4),
-                                  badgeContent: DataSingleton.shared.productData.data[index].isActive == 1 ? Text('ACTIVE', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)) : Text('INACTIVE', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)),
+                                  badgeContent: DataSingleton.shared.productData!.data![index].isActive == 1 ? Text('ACTIVE', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)) : Text('INACTIVE', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 20),
-                                  child: Text(DataSingleton.shared.productData.data[index].currencySymbol+' '+DataSingleton.shared.productData.data[index].salesPrice),
+                                  child: Text(DataSingleton.shared.productData!.data![index].currencySymbol!+' '+DataSingleton.shared.productData!.data![index].salesPrice!),
                                 ),
                               ],
                             ),
                           ),
                           onTap: () {
-                            onTapClicked(DataSingleton.shared.productData.data[index].id); 
+                            onTapClicked(DataSingleton.shared.productData!.data![index].id); 
                           },   
                         );
                       },

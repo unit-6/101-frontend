@@ -12,15 +12,15 @@ String baseUrl = 'https://sbit.dimensikini.xyz';
 class ApiManager extends ChangeNotifier {
 
   //===== [START] GET REQUEST FUNCTION =====//
-  Future<http.Response> getRequest(String url) async {
-    http.Response response;
+  Future<http.Response?> getRequest(String url) async {
+    http.Response? response;
     Map<String, String> headers = new HashMap();
     headers.putIfAbsent('Accept', () => 'application/json');
 
     try {
       response = await http
           .get(
-            url,
+            Uri.parse(url.toString()),
             headers: headers,
           )
           .timeout(const Duration(seconds: 60));
@@ -32,7 +32,7 @@ class ApiManager extends ChangeNotifier {
       return null;
     }
 
-    var bodyObj = json.decode(response.body);
+    var bodyObj = json.decode(response!.body);
     var bodyStr = JsonEncoder.withIndent('  ').convert(bodyObj);
 
     debugPrint('urlString $url');
@@ -44,9 +44,9 @@ class ApiManager extends ChangeNotifier {
   //===== [END] GET REQUEST FUNCTION =====//
 
   //===== [START] POST REQUEST FUNCTION =====//
-  Future<http.Response> postRequest(dynamic url, dynamic body,
-      {String contentType}) async {
-    http.Response response;
+  Future<http.Response?> postRequest(dynamic url, dynamic body,
+      {String? contentType}) async {
+    http.Response? response;
     Map<String, String> headers = new HashMap();
     headers['Accept'] = 'application/json';
     headers['Content-type'] =
@@ -57,7 +57,7 @@ class ApiManager extends ChangeNotifier {
     try {
       response = await http
           .post(
-            url,
+            Uri.parse(url.toString()),
             headers: headers,
             body: body,
             encoding: Encoding.getByName('utf-8'),
@@ -78,7 +78,7 @@ class ApiManager extends ChangeNotifier {
       debugPrint('requestHdr $headerObj');
       var bodyReq = JsonEncoder.withIndent('  ').convert(body);
       debugPrint('requestMsg $bodyReq');
-      debugPrint('statusCode ${response.statusCode}');
+      debugPrint('statusCode ${response!.statusCode}');
       var bodyObj = json.decode(response.body);
       var bodyStr = JsonEncoder.withIndent('  ').convert(bodyObj);
       debugPrint('returnMsg $bodyStr');
@@ -99,14 +99,12 @@ class ApiManager extends ChangeNotifier {
         } on Exception {
           return response.body.toString();
         }
-        break;
       case 201:
         try {
           return jsonDecode(response.body.toString());
         } on Exception {
           return response.body.toString();
         }
-        break;
       case 400:
         throw BadRequestException(response.body.toString());
       case 401:
@@ -124,7 +122,7 @@ class ApiManager extends ChangeNotifier {
 
   //===================================== START API =================================================//
   
-  Future merchantRegister(String udid, String phoneModel, String osVersion, String platform, String appVersion) async {
+  Future merchantRegister(String udid, String? phoneModel, String? osVersion, String? platform, String appVersion) async {
     String urlString = baseUrl + '/api/merchant/register';
     var returnMsg;
 
@@ -137,12 +135,12 @@ class ApiManager extends ChangeNotifier {
     };
 
     await postRequest(urlString, json.encode(body)).then((res) {
-      returnMsg = returnResponse(res);
+      returnMsg = returnResponse(res!);
     });
     return returnMsg;
   }
 
-  Future listProducts(String mid) async {
+  Future listProducts(String? mid) async {
     String urlString = baseUrl + '/api/merchant/listProduct';
     var returnMsg;
 
@@ -151,12 +149,12 @@ class ApiManager extends ChangeNotifier {
     };
 
     await postRequest(urlString, json.encode(body)).then((res) {
-      returnMsg = returnResponse(res);
+      returnMsg = returnResponse(res!);
     });
     return returnMsg;
   }
 
-  Future addProduct(String name, String salesPrice, String currencyCode, String currencySymbol, String stockQty, String mid) async {
+  Future addProduct(String name, String salesPrice, String currencyCode, String currencySymbol, String stockQty, String? mid) async {
     String urlString = baseUrl + '/api/merchant/addProduct';
     var returnMsg;
 
@@ -170,12 +168,12 @@ class ApiManager extends ChangeNotifier {
     };
 
     await postRequest(urlString, json.encode(body)).then((res) {
-      returnMsg = returnResponse(res);
+      returnMsg = returnResponse(res!);
     });
     return returnMsg;
   }
 
-  Future detailsProduct(int productId) async {
+  Future detailsProduct(int? productId) async {
     String urlString = baseUrl + '/api/merchant/detailsProduct';
     var returnMsg;
 
@@ -184,12 +182,12 @@ class ApiManager extends ChangeNotifier {
     };
 
     await postRequest(urlString, json.encode(body)).then((res) {
-      returnMsg = returnResponse(res);
+      returnMsg = returnResponse(res!);
     });
     return returnMsg;
   }
 
-  Future editProduct(int id, String name, String salesPrice, String currencyCode, String currencySymbol, String stockQty, int isActive) async {
+  Future editProduct(int? id, String name, String salesPrice, String? currencyCode, String? currencySymbol, String stockQty, int? isActive) async {
     String urlString = baseUrl + '/api/merchant/editProduct';
     var returnMsg;
 
@@ -204,12 +202,12 @@ class ApiManager extends ChangeNotifier {
     };
 
     await postRequest(urlString, json.encode(body)).then((res) {
-      returnMsg = returnResponse(res);
+      returnMsg = returnResponse(res!);
     });
     return returnMsg;
   }
 
-  Future startSales(String cost, String currencyCode, String currencySymbol, String mid) async {
+  Future startSales(String cost, String currencyCode, String currencySymbol, String? mid) async {
     String urlString = baseUrl + '/api/merchant/startSales';
     var returnMsg;
 
@@ -221,7 +219,7 @@ class ApiManager extends ChangeNotifier {
     };
     
     await postRequest(urlString, json.encode(body)).then((res) {
-      returnMsg = returnResponse(res);
+      returnMsg = returnResponse(res!);
     });
     return returnMsg;
   }
@@ -239,7 +237,7 @@ class ApiManager extends ChangeNotifier {
     };
     
     await postRequest(urlString, json.encode(body)).then((res) {
-      returnMsg = returnResponse(res);
+      returnMsg = returnResponse(res!);
     });
     return returnMsg;
   }
@@ -253,7 +251,7 @@ class ApiManager extends ChangeNotifier {
     };
     
     await postRequest(urlString, json.encode(body)).then((res) {
-      returnMsg = returnResponse(res);
+      returnMsg = returnResponse(res!);
     });
     return returnMsg;
   }

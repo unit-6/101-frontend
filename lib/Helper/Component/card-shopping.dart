@@ -13,7 +13,7 @@ class CardShopping extends StatelessWidget {
   final bool stock;
   final String price;
   final String img;
-  final Function deleteOnPress;
+  final Function? deleteOnPress;
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +36,15 @@ class CardShopping extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(3.0)),
                       )),
-                  FlatButton(
-                    textColor: AppColors.white,
-                    color: AppColors.initial,
-                    onPressed: () {},
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      primary: AppColors.white,
+                      backgroundColor: AppColors.initial,
+                       shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
                     ),
+                    onPressed: () {},
                     child: Padding(
                       padding: EdgeInsets.only(
                           left: 5.0, right: 5.0, top: 12, bottom: 12),
@@ -101,7 +103,7 @@ class CardShopping extends StatelessWidget {
                           textColor: AppColors.white,
                           color: AppColors.initial,
                           onPressed: () {
-                            deleteOnPress();
+                            deleteOnPress!();
                           },
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4.0),
@@ -153,14 +155,14 @@ class CardShopping extends StatelessWidget {
 }
 
 class Dropdown extends StatefulWidget {
-  Dropdown({Key key}) : super(key: key);
+  Dropdown({Key? key}) : super(key: key);
 
   @override
   _DropdownState createState() => _DropdownState();
 }
 
 class _DropdownState extends State<Dropdown> {
-  String dropdownValue = '1';
+  String? dropdownValue = '1';
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +185,7 @@ class _DropdownState extends State<Dropdown> {
             iconSize: 20,
             elevation: 1,
             style: TextStyle(color: AppColors.white),
-            onChanged: (String newValue) {
+            onChanged: (String? newValue) {
               setState(() {
                 dropdownValue = newValue;
               });

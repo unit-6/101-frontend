@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
-import 'package:sbit_mobile/Class/Product/edit_product.dart';
 import 'package:sbit_mobile/Helper/AppTheme/appColors.dart';
 import 'package:sbit_mobile/Helper/Component/navbar.dart';
 import 'package:sbit_mobile/Helper/Helper/helper.dart';
@@ -12,22 +11,22 @@ import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
 import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 
-ApiManager apiManager;
-String productName = '';
-String salesPrice = '';
-int stockQty = 0;
-int isActive = 0;
-String createdAt = '';
-String updatedAt = '';
-String currencyCode = '';
-String currencySymbol = '';
-int id;
+late ApiManager apiManager;
+String? productName = '';
+String? salesPrice = '';
+int? stockQty = 0;
+int? isActive = 0;
+String? createdAt = '';
+String? updatedAt = '';
+String? currencyCode = '';
+String? currencySymbol = '';
+int? id;
 
 class DetailsProduct extends StatefulWidget {
 
-  final int productId;
+  final int? productId;
 
-  const DetailsProduct({Key key, this.productId}) : super(key: key);
+  const DetailsProduct({Key? key, this.productId}) : super(key: key);
 
   @override
   _DetailsProduct createState() => _DetailsProduct();
@@ -37,7 +36,7 @@ class _DetailsProduct extends State<DetailsProduct> {
 
   //===================================== [START] API SERVICES ===================================================//
 
-  Future onDetailsProduct(int id) async {
+  Future onDetailsProduct(int? id) async {
     Future.delayed(Duration.zero, () => DialogHelper.loadingDialog(context));
     await apiManager.detailsProduct(id).then((res) {
       Navigator.of(context).pop();
@@ -71,20 +70,15 @@ class _DetailsProduct extends State<DetailsProduct> {
   }
 
   void onPressed() {
-    ExtendedNavigator.ofRouter<ModuleRouter.Router>().push(
-      CupertinoPageRoute(
-        fullscreenDialog: true,
-        builder: (context) => EditProduct(
-          vProdName: productName, 
-          vSalesPrice: salesPrice, 
-          vStockQty: stockQty,
-          vId: id,
-          vIsActive: isActive,
-          vCurrencyCode: currencyCode,
-          vCurrencySymbol: currencySymbol,
-          ),
-      ),
-    );
+    AutoRouter.of(context).push(ModuleRouter.EditProduct(
+      vProdName: productName, 
+      vSalesPrice: salesPrice, 
+      vStockQty: stockQty, 
+      vId: id, 
+      vIsActive: isActive,
+      vCurrencyCode: currencyCode,
+      vCurrencySymbol: currencySymbol
+    ));
   }
 
   @override
@@ -92,7 +86,7 @@ class _DetailsProduct extends State<DetailsProduct> {
     super.initState();
     apiManager = Provider.of<ApiManager>(context, listen: false);
     Helper.instance.checkInternet().then((intenet) {
-      if(intenet != null && intenet) {
+      if(intenet) {
         onDetailsProduct(widget.productId);
       } else {
         DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
@@ -134,7 +128,7 @@ class _DetailsProduct extends State<DetailsProduct> {
                           padding: const EdgeInsets.only(left: 4.0, top: 8),
                           child: Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(productName,
+                            child: Text(productName!,
                                 style: TextStyle(
                                     color: AppColors.text,
                                     fontWeight: FontWeight.w300,
@@ -156,7 +150,7 @@ class _DetailsProduct extends State<DetailsProduct> {
                           padding: const EdgeInsets.only(left: 4.0, top: 8),
                           child: Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(currencySymbol+' '+salesPrice,
+                            child: Text(currencySymbol!+' '+salesPrice!,
                                 style: TextStyle(
                                     color: AppColors.text,
                                     fontWeight: FontWeight.w300,
@@ -225,7 +219,7 @@ class _DetailsProduct extends State<DetailsProduct> {
                           padding: const EdgeInsets.only(left: 4.0, top: 8),
                           child: Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(createdAt,
+                            child: Text(createdAt!,
                                 style: TextStyle(
                                     color: AppColors.text,
                                     fontWeight: FontWeight.w300,
@@ -247,31 +241,36 @@ class _DetailsProduct extends State<DetailsProduct> {
                           padding: const EdgeInsets.only(left: 4.0, top: 8),
                           child: Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(updatedAt,
+                            child: Text(updatedAt!,
                                 style: TextStyle(
                                     color: AppColors.text,
                                     fontWeight: FontWeight.w300,
                                     fontSize: 15)),
                           ),
                         ),
+
+
                         SizedBox(
-                            width: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 32),
-                              child: RaisedButton(
-                                textColor: AppColors.white,
-                                color: AppColors.warning,
-                                onPressed: () {
-                                  onPressed();
-                                },
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0),),
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 12, bottom: 12),
-                                  child: Text('Edit', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0))
-                                ),
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 32),
+                            child: ElevatedButton(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 12, bottom: 12),
+                                child: const Text('Edit', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0)),
                               ),
+                              style: TextButton.styleFrom(
+                                primary: AppColors.white,
+                                backgroundColor: AppColors.warning,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(4.0)),
+                              ),
+                              onPressed: () {
+                                onPressed();
+                              },
                             ),
                           ),
+                        ),
                       ],
                     ),
                   ),

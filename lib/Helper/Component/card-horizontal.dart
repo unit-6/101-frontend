@@ -22,7 +22,7 @@ class CardHorizontal extends StatelessWidget {
     return Container(
         height: 130,
         child: GestureDetector(
-          onTap: tap,
+          onTap: tap as void Function()?,
           child: Card(
             elevation: 0.6,
             shape: RoundedRectangleBorder(

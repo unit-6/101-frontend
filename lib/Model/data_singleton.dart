@@ -6,5 +6,5 @@ class DataSingleton {
   DataSingleton._internal();
   static DataSingleton get shared => _singleton;
 
-  Product productData;
+  Product? productData;
 }

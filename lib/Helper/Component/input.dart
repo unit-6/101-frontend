@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:sbit_mobile/Helper/AppTheme/appColors.dart';
 
 class Input extends StatelessWidget {
-  final String placeholder;
-  final Widget suffixIcon;
-  final Widget prefixIcon;
-  final Function onTap;
-  final Function onChanged;
-  final TextEditingController controller;
+  final String? placeholder;
+  final Widget? suffixIcon;
+  final Widget? prefixIcon;
+  final Function? onTap;
+  final Function? onChanged;
+  final TextEditingController? controller;
   final bool autofocus;
   final Color borderColor;
   final bool autocorrect;
-  final int keyboardType;
-  final int textInputAction;
-  final String errorText;
+  final int? keyboardType;
+  final int? textInputAction;
+  final String? errorText;
 
   Input(
       {this.placeholder,
@@ -38,8 +38,8 @@ class Input extends StatelessWidget {
         autocorrect: autocorrect,
         keyboardType: keyboardType == 00 ? TextInputType.text : (keyboardType == 01 ? TextInputType.number : TextInputType.numberWithOptions(decimal: true)),
         textInputAction: textInputAction == 00 ? TextInputAction.done : TextInputAction.next,
-        onTap: onTap,
-        onChanged: onChanged,
+        onTap: onTap as void Function()?,
+        onChanged: onChanged as void Function(String)?,
         controller: controller,
         autofocus: autofocus,
         style:

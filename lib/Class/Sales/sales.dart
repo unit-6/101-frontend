@@ -13,10 +13,11 @@ import 'package:sbit_mobile/Model/data_singleton.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
 import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 
-ApiManager apiManager;
-CounterBloc counterBloc;
+late ApiManager apiManager;
+late CounterBloc counterBloc;
 
-bool isAddTrx, isEndSales;
+bool? isAddTrx;
+bool? isEndSales;
 
 class Sales extends StatefulWidget {
 
@@ -63,17 +64,18 @@ class _Sales extends State<Sales> {
   //===================================== [END] API SERVICES ===================================================//
   
   void onReadResponse(bool status, res) {
-    if(isAddTrx){
+    if(isAddTrx == true){
       if (status) {
         if (res['code'] == 200) {
           DialogHelper.customDialog(context, 'Success', res['message'], () { 
-            ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
+            // ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
+            AutoRouter.of(context).popUntilRouteWithName(ModuleRouter.Dashboard.name);
           });
         }
       }
     }
 
-    if(isEndSales){
+    if(isEndSales == true){
       if (status) {
         if (res['code'] == 200) {
 
@@ -84,14 +86,15 @@ class _Sales extends State<Sales> {
           GlobalVariable.salesStatus = null;
 
           DialogHelper.customDialog(context, res['message'], 'Today profit: '+ res['profit'].toString(), () { 
-            ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
+            // ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
+            AutoRouter.of(context).popUntilRouteWithName(ModuleRouter.Dashboard.name);
           });
         }
       }
     }
   }
 
-  void onPressed(String productName, int prodId) {
+  void onPressed(String? productName, int? prodId) {
     counterBloc.reset();
     DialogHelper.quantityDialog(
       context,
@@ -101,7 +104,7 @@ class _Sales extends State<Sales> {
       () { 
           Navigator.of(context).pop();
           Helper.instance.checkInternet().then((intenet) {
-          if(intenet != null && intenet) {
+          if(intenet) {
             onAddTrx(
               counterBloc.counter.toString(),
               'MYR',
@@ -155,19 +158,19 @@ class _Sales extends State<Sales> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                   crossAxisCount: 2,
-                  children: List.generate(DataSingleton.shared.productData.data?.length?? 0, (index) {
+                  children: List.generate(DataSingleton.shared.productData!.data?.length?? 0, (index) {
                     return Container(
                       child: Card(
                         child: InkWell(
                           onTap: (){ 
-                            onPressed(DataSingleton.shared.productData.data[index].name, DataSingleton.shared.productData.data[index].id);
+                            onPressed(DataSingleton.shared.productData!.data![index].name, DataSingleton.shared.productData!.data![index].id);
                           },
                           child: Column(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(top: 32),
                                 child: Text(
-                                  DataSingleton.shared.productData.data[index].name,
+                                  DataSingleton.shared.productData!.data![index].name!,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)
                                 ),
@@ -175,7 +178,7 @@ class _Sales extends State<Sales> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text(
-                                  DataSingleton.shared.productData.data[index].currencySymbol+' '+DataSingleton.shared.productData.data[index].salesPrice,
+                                  DataSingleton.shared.productData!.data![index].currencySymbol!+' '+DataSingleton.shared.productData!.data![index].salesPrice!,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.normal)
                                 ),
@@ -183,7 +186,7 @@ class _Sales extends State<Sales> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 32),
                                 child: Text(
-                                  'x'+DataSingleton.shared.productData.data[index].stockQty.toString(),
+                                  'x'+DataSingleton.shared.productData!.data![index].stockQty.toString(),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.normal)
                                 ),
@@ -201,11 +204,19 @@ class _Sales extends State<Sales> {
                 padding: const EdgeInsets.all(16.0),
                 child: SizedBox(
                   width: double.infinity,
-                  child: RaisedButton(
-                    textColor: AppColors.white,
-                    color: AppColors.initial,
+                  child: ElevatedButton(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 14, bottom: 14),
+                      child: const Text('End Sales', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0)),
+                    ),
+                    style: TextButton.styleFrom(
+                      primary: AppColors.white,
+                      backgroundColor: AppColors.initial,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(4.0)),
+                    ),
                     onPressed: () {
-                       DialogHelper.confirmDialog(
+                      DialogHelper.confirmDialog(
                         context,
                           'End Sales',
                           'Are you confirm to end today sales ?',
@@ -213,7 +224,7 @@ class _Sales extends State<Sales> {
                         () { 
                             Navigator.of(context).pop();
                             Helper.instance.checkInternet().then((intenet) {
-                            if(intenet != null && intenet) {
+                            if(intenet) {
                               onEndSales(
                                 GlobalVariable.salesID.toString()
                               );
@@ -224,11 +235,6 @@ class _Sales extends State<Sales> {
                         },
                       );
                     },
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0),),
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 14, bottom: 14),
-                      child: Text('End Sales', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0))
-                    ),
                   ),
                 ),
               ),

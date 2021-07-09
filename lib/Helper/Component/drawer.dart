@@ -4,7 +4,7 @@ import 'package:sbit_mobile/Helper/Component/drawer-tile.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ArgonDrawer extends StatelessWidget {
-  final String currentPage;
+  final String? currentPage;
 
   ArgonDrawer({this.currentPage});
 

@@ -10,10 +10,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 The things you'll need in order to use the app and how to install them
 
-* Flutter (Channel stable, 1.22.4)
+* Flutter (Channel stable, 2.2.3)
 * Android Studio (version 4.1)
 * Xcode - develop for iOS and macOS (Xcode 12.5)
-* VS Code (version 1.55.2)
+* VS Code (version 1.57.1)
 
 ### Installation
 
@@ -35,7 +35,7 @@ flutter pub get
 
 ## Built with
 
-* Dart version 2.10.4 - The programming language used
+* Dart version 2.13.4 - The programming language used
 
 ## Versioning
 

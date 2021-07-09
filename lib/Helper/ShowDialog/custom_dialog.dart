@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CustomDialog extends StatelessWidget {
-  final String titleMsg;
-  final String contentMsg;
-  final Function onRetryPressed;
+  final String? titleMsg;
+  final String? contentMsg;
+  final Function? onRetryPressed;
 
-  const CustomDialog({Key key, this.titleMsg, this.contentMsg, this.onRetryPressed}) : super(key: key);
+  const CustomDialog({Key? key, this.titleMsg, this.contentMsg, this.onRetryPressed}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class CustomDialog extends StatelessWidget {
               alignment: Alignment.centerLeft,
               width: double.infinity,
               child: Text(
-                titleMsg, 
+                titleMsg!, 
                 style: TextStyle(
                   fontWeight: FontWeight.bold, 
                   fontSize: 20.0,
@@ -60,7 +60,7 @@ class CustomDialog extends StatelessWidget {
               alignment: Alignment.topLeft,
               width: double.infinity,
               child: Text(
-                contentMsg, 
+                contentMsg!, 
                 style: TextStyle(
                   fontWeight: FontWeight.normal, 
                   fontSize: 18.0,
@@ -85,7 +85,7 @@ class CustomDialog extends StatelessWidget {
                       color: Colors.pink,
                       textColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(6.0)),
-                      onPressed: onRetryPressed,
+                      onPressed: onRetryPressed as void Function()?,
                     ),
                   ),
                 ],
@@ -116,7 +116,7 @@ class CustomDialog extends StatelessWidget {
               alignment: Alignment.centerLeft,
               width: double.infinity,
               child: Text(
-                titleMsg, 
+                titleMsg!, 
                 style: TextStyle(
                   fontWeight: FontWeight.bold, 
                   fontSize: 20.0,
@@ -131,7 +131,7 @@ class CustomDialog extends StatelessWidget {
               alignment: Alignment.topLeft,
               width: double.infinity,
               child: Text(
-                contentMsg, 
+                contentMsg!, 
                 style: TextStyle(
                   fontWeight: FontWeight.normal, 
                   fontSize: 18.0,
@@ -156,7 +156,7 @@ class CustomDialog extends StatelessWidget {
                       color: Color(0xff44D62C),
                       textColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(3.0)),
-                      onPressed: onRetryPressed,
+                      onPressed: onRetryPressed as void Function()?,
                     ),
                   ),
                 ],

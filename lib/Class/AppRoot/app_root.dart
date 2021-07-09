@@ -12,7 +12,7 @@ import 'package:sbit_mobile/Helper/Helper/helper.dart';
 import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 
-ApiManager apiManager;
+late ApiManager apiManager;
 
 class AppRoot extends StatelessWidget {
   @override
@@ -23,7 +23,7 @@ class AppRoot extends StatelessWidget {
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -33,7 +33,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   //===================================== [START] API SERVICES ===================================================//
-  Future onMerchantRegister(String udid, String phoneModel, String osVersion, String platform, String appVersion) async {
+  Future onMerchantRegister(String udid, String? phoneModel, String? osVersion, String? platform, String appVersion) async {
     await apiManager.merchantRegister(udid, phoneModel, osVersion, platform, appVersion).then((res) {
       onReadResponse(true, res);
     }).catchError((res) {
@@ -83,14 +83,16 @@ class _SplashScreenState extends State<SplashScreen> {
     // GlobalVariable().removeTerminalSecret();
     // GlobalVariable().removePassCode();
 
-    ExtendedNavigator.ofRouter<ModuleRouter.Router>().pushReplacementNamed(ModuleRouter.Routes.dashboard);
+    // ExtendedNavigator.ofRouter<ModuleRouter.Router>().pushReplacementNamed(ModuleRouter.Routes.dashboard);
+
+    AutoRouter.of(context).replace(ModuleRouter.Dashboard());
   }
 
   void checkAppInfo() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    String deviceData, osVersion, platform;
+    String? deviceData, osVersion, platform;
 
-    PackageInfo packageInfo;
+    late PackageInfo packageInfo;
     String udid;
 
     try {
@@ -134,8 +136,8 @@ class _SplashScreenState extends State<SplashScreen> {
     debugPrint('UDID: ' + udid);
     debugPrint('APP VERSION: ' + packageInfo.version);
     debugPrint('BUILD NUMBER: ' + packageInfo.buildNumber);
-    debugPrint('PHONE MODEL: ' + deviceData);
-    debugPrint('OS VERSION: ' + osVersion);
+    debugPrint('PHONE MODEL: ' + deviceData!);
+    debugPrint('OS VERSION: ' + osVersion!);
 
     GlobalVariable().readMerchantID().then((value) {
       if (value != null) {

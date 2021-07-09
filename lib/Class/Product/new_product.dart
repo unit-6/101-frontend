@@ -11,7 +11,7 @@ import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
 import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 
-ApiManager apiManager;
+late ApiManager apiManager;
 
 class NewProduct extends StatefulWidget {
 
@@ -27,7 +27,7 @@ class _NewProduct extends State<NewProduct> {
 
   //===================================== [START] API SERVICES ===================================================//
  
-  Future onAddProduct(String name, String salesPrice, String currencyCode, String currencySymbol, String stockQty, String mid) async {
+  Future onAddProduct(String name, String salesPrice, String currencyCode, String currencySymbol, String stockQty, String? mid) async {
     Future.delayed(Duration.zero, () => DialogHelper.loadingDialog(context));
     await apiManager.addProduct(name, salesPrice, currencyCode, currencySymbol, stockQty, mid).then((res) {
       Navigator.of(context).pop();
@@ -44,7 +44,8 @@ class _NewProduct extends State<NewProduct> {
     if (status) {
       if (res['code'] == 200) {
         DialogHelper.customDialog(context, 'Success', res['message'], () { 
-        ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
+        // ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
+        AutoRouter.of(context).popUntilRouteWithName(ModuleRouter.Dashboard.name);
       });
       }
     } else {
@@ -56,7 +57,7 @@ class _NewProduct extends State<NewProduct> {
     if(nameCtrl.text.isNotEmpty && salePriceCtrl.text.isNotEmpty && stockQtyCtrl.text.isNotEmpty) {
       debugPrint('name=${nameCtrl.text} : salesPrice=${salePriceCtrl.text} : stockQty=${stockQtyCtrl.text}');
       Helper.instance.checkInternet().then((intenet) {
-      if(intenet != null && intenet) {
+      if(intenet) {
         onAddProduct(
           nameCtrl.text,
           salePriceCtrl.text,
@@ -169,17 +170,20 @@ class _NewProduct extends State<NewProduct> {
                             width: double.infinity,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 32),
-                              child: RaisedButton(
-                                textColor: AppColors.white,
-                                color: AppColors.initial,
+                              child: ElevatedButton(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 12, bottom: 12),
+                                  child: const Text('Add New', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0)),
+                                ),
+                                style: TextButton.styleFrom(
+                                  primary: AppColors.white,
+                                  backgroundColor: AppColors.initial,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: new BorderRadius.circular(4.0)),
+                                ),
                                 onPressed: () {
                                   onPressed();
                                 },
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0),),
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 12, bottom: 12),
-                                  child: Text('Add New', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0))
-                                ),
                               ),
                             ),
                           ),

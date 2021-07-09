@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:sbit_mobile/Helper/AppTheme/appColors.dart';
 
 class ConfirmDialog extends StatelessWidget {
-  final String titleMsg;
-  final String contentMsg;
-  final Function onRetryPressed1;
-  final Function onRetryPressed;
+  final String? titleMsg;
+  final String? contentMsg;
+  final Function? onRetryPressed1;
+  final Function? onRetryPressed;
 
-  const ConfirmDialog({Key key, this.titleMsg, this.contentMsg, this.onRetryPressed, this.onRetryPressed1}) : super(key: key);
+  const ConfirmDialog({Key? key, this.titleMsg, this.contentMsg, this.onRetryPressed, this.onRetryPressed1}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class ConfirmDialog extends StatelessWidget {
               alignment: Alignment.centerLeft,
               width: double.infinity,
               child: Text(
-                titleMsg, 
+                titleMsg!, 
                 style: TextStyle(
                   fontWeight: FontWeight.bold, 
                   fontSize: 20.0,
@@ -62,7 +62,7 @@ class ConfirmDialog extends StatelessWidget {
               alignment: Alignment.topLeft,
               width: double.infinity,
               child: Text(
-                contentMsg, 
+                contentMsg!, 
                 style: TextStyle(
                   fontWeight: FontWeight.normal, 
                   fontSize: 18.0,
@@ -90,7 +90,7 @@ class ConfirmDialog extends StatelessWidget {
                             color: Colors.pink,
                           ),
                         ),
-                      onPressed: onRetryPressed1,
+                      onPressed: onRetryPressed1 as void Function()?,
                     ),
                   ),
                   SizedBox(width: 8,),
@@ -102,7 +102,7 @@ class ConfirmDialog extends StatelessWidget {
                       color: AppColors.label,
                       textColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(6.0)),
-                      onPressed: onRetryPressed,
+                      onPressed: onRetryPressed as void Function()?,
                     ),
                   ),
                 ],
@@ -131,7 +131,7 @@ class ConfirmDialog extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0), 
-                child: Text(titleMsg, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),),
+                child: Text(titleMsg!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),),
               ),
             ],
           ),
@@ -140,7 +140,7 @@ class ConfirmDialog extends StatelessWidget {
             children: [
             Padding(
                 padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 10.0), 
-                child: Text(contentMsg, style: TextStyle(fontWeight: FontWeight.w500, fontSize: 19.0),),
+                child: Text(contentMsg!, style: TextStyle(fontWeight: FontWeight.w500, fontSize: 19.0),),
               ),
             ],
           ),
@@ -163,7 +163,7 @@ class ConfirmDialog extends StatelessWidget {
                             color: Color(0xff44D62C),
                           ),
                         ),
-                      onPressed: onRetryPressed1,
+                      onPressed: onRetryPressed1 as void Function()?,
                     ),
                   ),
                   SizedBox(width: 8,),
@@ -175,7 +175,7 @@ class ConfirmDialog extends StatelessWidget {
                       color: Color(0xff44D62C),
                       textColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(3.0)),
-                      onPressed: onRetryPressed,
+                      onPressed: onRetryPressed as void Function()?,
                     ),
                   ),
                 ],

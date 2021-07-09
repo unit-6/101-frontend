@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -26,16 +25,16 @@ void main() {
 }
 
 class AppRootMain extends StatelessWidget {
+  final _rootRouter = ModuleRouter.AppRouter();
   
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'SBIT Mobile',
-      initialRoute: ModuleRouter.Routes.approot,
-      onGenerateRoute: ModuleRouter.Router().onGenerateRoute,
-      builder: ExtendedNavigator<ModuleRouter.Router>(router: ModuleRouter.Router()),
       theme: AppThemeGlobal.appThemeGlobal,
+      routerDelegate: _rootRouter.delegate(),  
+      routeInformationParser: _rootRouter.defaultRouteParser(),
     );
   }
 }

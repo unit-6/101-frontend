@@ -11,16 +11,16 @@ class Navbar extends StatefulWidget implements PreferredSizeWidget {
   final bool backButton;
   final bool transparent;
   final bool rightOptions;
-  final List<String> tags;
-  final Function getCurrentPage;
+  final List<String>? tags;
+  final Function? getCurrentPage;
   final bool isOnSearch;
-  final TextEditingController searchController;
-  final Function searchOnChanged;
+  final TextEditingController? searchController;
+  final Function? searchOnChanged;
   final bool searchAutofocus;
   final bool noShadow;
   final Color bgColor;
-  final Function onTapOne;
-  final Function onTapTwo;
+  final Function? onTapOne;
+  final Function? onTapTwo;
   final bool noButton;
 
   Navbar(
@@ -55,13 +55,13 @@ class Navbar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _NavbarState extends State<Navbar> {
-  String activeTag;
+  String? activeTag;
 
   ItemScrollController _scrollController = ItemScrollController();
 
   void initState() {
-    if (widget.tags != null && widget.tags.length != 0) {
-      activeTag = widget.tags[0];
+    if (widget.tags != null && widget.tags!.length != 0) {
+      activeTag = widget.tags![0];
     }
     super.initState();
   }
@@ -71,7 +71,7 @@ class _NavbarState extends State<Navbar> {
     final bool categories =
         widget.categoryOne.isNotEmpty && widget.categoryTwo.isNotEmpty;
     final bool tagsExist =
-        widget.tags == null ? false : (widget.tags.length == 0 ? false : true);
+        widget.tags == null ? false : (widget.tags!.length == 0 ? false : true);
 
     return Container(
         height: widget.searchBar
@@ -138,7 +138,7 @@ class _NavbarState extends State<Navbar> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            onTap: widget.onTapOne,
+                            onTap: widget.onTapOne as void Function()?,
                             child: IconButton(
                                 icon: Icon(Icons.add_business,
                                     color: !widget.transparent
@@ -150,7 +150,7 @@ class _NavbarState extends State<Navbar> {
                                 onPressed: null),
                           ),
                           GestureDetector(
-                            onTap: widget.onTapTwo,
+                            onTap: widget.onTapTwo as void Function()?,
                             child: IconButton(
                                 icon: Icon(Icons.history,
                                     color: !widget.transparent
@@ -235,19 +235,19 @@ class _NavbarState extends State<Navbar> {
                     child: ScrollablePositionedList.builder(
                       itemScrollController: _scrollController,
                       scrollDirection: Axis.horizontal,
-                      itemCount: widget.tags.length,
+                      itemCount: widget.tags!.length,
                       itemBuilder: (BuildContext context, int index) {
                         return GestureDetector(
                           onTap: () {
-                            if (activeTag != widget.tags[index]) {
-                              setState(() => activeTag = widget.tags[index]);
+                            if (activeTag != widget.tags![index]) {
+                              setState(() => activeTag = widget.tags![index]);
                               _scrollController.scrollTo(
                                   index:
-                                      index == widget.tags.length - 1 ? 1 : 0,
+                                      index == widget.tags!.length - 1 ? 1 : 0,
                                   duration: Duration(milliseconds: 420),
                                   curve: Curves.easeIn);
                               if (widget.getCurrentPage != null)
-                                widget.getCurrentPage(activeTag);
+                                widget.getCurrentPage!(activeTag);
                             }
                           },
                           child: Container(
@@ -257,15 +257,15 @@ class _NavbarState extends State<Navbar> {
                                   top: 4, bottom: 4, left: 20, right: 20),
                               // width: 90,
                               decoration: BoxDecoration(
-                                  color: activeTag == widget.tags[index]
+                                  color: activeTag == widget.tags![index]
                                       ? AppColors.primary
                                       : AppColors.secondary,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(4.0))),
                               child: Center(
-                                child: Text(widget.tags[index],
+                                child: Text(widget.tags![index],
                                     style: TextStyle(
-                                        color: activeTag == widget.tags[index]
+                                        color: activeTag == widget.tags![index]
                                             ? AppColors.white
                                             : AppColors.black,
                                         fontWeight: FontWeight.w600,

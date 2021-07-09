@@ -105,7 +105,7 @@ class Helper {
       'iPad11,4': 'iPad Air 3rd Gen',
     };
 
-    String deviceName = deviceNamesByCode[code];
+    String deviceName = deviceNamesByCode[code]!;
 
     if (deviceName.isEmpty) {
       if (code.contains('iPhone')) {

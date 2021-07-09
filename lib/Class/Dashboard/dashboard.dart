@@ -11,15 +11,15 @@ import 'package:sbit_mobile/Helper/Component/input.dart';
 import 'package:sbit_mobile/Helper/Component/navbar.dart';
 import 'package:sbit_mobile/Helper/GlobalVariable/global_variable.dart';
 import 'package:sbit_mobile/Helper/Helper/helper.dart';
-import 'package:sbit_mobile/Helper/Routes/router.gr.dart';
 import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
 import 'package:sbit_mobile/Model/data_singleton.dart';
 import 'package:sbit_mobile/Model/product.dart';
 import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 
-ApiManager apiManager;
-bool isListProducts, isStartSales;
+late ApiManager apiManager;
+bool? isListProducts;
+bool? isStartSales;
 
 class Dashboard extends StatefulWidget {
 
@@ -33,7 +33,7 @@ class _DashboardState extends State<Dashboard> {
 
   //===================================== [START] API SERVICES ===================================================//
  
-  Future onListProducts(String mid) async {
+  Future onListProducts(String? mid) async {
 
     isListProducts = true;
     isStartSales = false;
@@ -48,7 +48,7 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  Future onStartSales(String cost, String currencyCode, String currencySymbol, String mid) async {
+  Future onStartSales(String cost, String currencyCode, String currencySymbol, String? mid) async {
 
     isListProducts = false;
     isStartSales = true;
@@ -66,7 +66,7 @@ class _DashboardState extends State<Dashboard> {
   //===================================== [END] API SERVICES ===================================================//
   
   void onReadResponse(bool status, res) {
-    if(isListProducts){
+    if(isListProducts == true){
       if (status) {
         if (res['code'] == 200) {
           setState(() {
@@ -75,10 +75,21 @@ class _DashboardState extends State<Dashboard> {
 
           if(GlobalVariable.salesStatus != null) {
             if(GlobalVariable.salesStatus == 1) {
-              ExtendedNavigator.ofRouter<ModuleRouter.Router>()
-              .pushNamed(ModuleRouter.Routes.sales).then((value) {
+
+              // ExtendedNavigator.ofRouter<ModuleRouter.Router>()
+              // .pushNamed(ModuleRouter.Routes.sales).then((value) {
+              //   Helper.instance.checkInternet().then((intenet) {
+              //     if(intenet != null && intenet) {
+              //       onListProducts(GlobalVariable.merchantID);
+              //     } else {
+              //       DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+              //     }
+              //   });
+              // });
+
+              AutoRouter.of(context).push(ModuleRouter.Sales()).then((value) {
                 Helper.instance.checkInternet().then((intenet) {
-                  if(intenet != null && intenet) {
+                  if(intenet) {
                     onListProducts(GlobalVariable.merchantID);
                   } else {
                     DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
@@ -92,7 +103,7 @@ class _DashboardState extends State<Dashboard> {
         // error status, enhance later
       }
     } 
-    if(isStartSales) {
+    if(isStartSales == true) {
       if (status) {
         if (res['code'] == 200) {
           debugPrint(res['message']);
@@ -103,16 +114,26 @@ class _DashboardState extends State<Dashboard> {
           GlobalVariable().addSalesStatus('key_sales_status', res['status'].toString());
           GlobalVariable.salesStatus = res['status'];
 
-          ExtendedNavigator.ofRouter<ModuleRouter.Router>()
-            .pushNamed(ModuleRouter.Routes.sales).then((value) {
-              Helper.instance.checkInternet().then((intenet) {
-                if(intenet != null && intenet) {
-                  onListProducts(GlobalVariable.merchantID);
-                } else {
-                  DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
-                }
-              });
+          // ExtendedNavigator.ofRouter<ModuleRouter.Router>()
+          //   .pushNamed(ModuleRouter.Routes.sales).then((value) {
+          //     Helper.instance.checkInternet().then((intenet) {
+          //       if(intenet != null && intenet) {
+          //         onListProducts(GlobalVariable.merchantID);
+          //       } else {
+          //         DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+          //       }
+          //     });
+          //   });
+
+          AutoRouter.of(context).push(ModuleRouter.Sales()).then((value) {
+            Helper.instance.checkInternet().then((intenet) {
+              if(intenet) {
+                onListProducts(GlobalVariable.merchantID);
+              } else {
+                DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+              }
             });
+          });
         }
       } else {
         // error status, enhance later
@@ -120,17 +141,27 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
-  onTapClicked(int id) {
-    ExtendedNavigator.ofRouter<ModuleRouter.Router>()
-      .pushNamed(ModuleRouter.Routes.detailsProduct, arguments: DetailsProductArguments(productId: id)).then((value) {
-        Helper.instance.checkInternet().then((intenet) {
-          if(intenet != null && intenet) {
-            onListProducts(GlobalVariable.merchantID);
-          } else {
-            DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
-          }
-        });
+  onTapClicked(int? id) {
+    // ExtendedNavigator.ofRouter<ModuleRouter.Router>()
+    //   .pushNamed(ModuleRouter.Routes.detailsProduct, arguments: DetailsProductArguments(productId: id)).then((value) {
+    //     Helper.instance.checkInternet().then((intenet) {
+    //       if(intenet != null && intenet) {
+    //         onListProducts(GlobalVariable.merchantID);
+    //       } else {
+    //         DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+    //       }
+    //     });
+    //   });
+
+    AutoRouter.of(context).push(ModuleRouter.DetailsProduct(productId: id)).then((value) {
+      Helper.instance.checkInternet().then((intenet) {
+        if(intenet) {
+          onListProducts(GlobalVariable.merchantID);
+        } else {
+          DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
+        }
       });
+    });
   }
 
   onPressed(String status) {
@@ -146,7 +177,7 @@ class _DashboardState extends State<Dashboard> {
           if(costCtrl.text.isNotEmpty) {
             debugPrint('costCtrl=${costCtrl.text}');
             Helper.instance.checkInternet().then((intenet) {
-            if(intenet != null && intenet) {
+            if(intenet) {
               onStartSales(
                 costCtrl.text,
                 'MYR',
@@ -183,7 +214,7 @@ class _DashboardState extends State<Dashboard> {
     isStartSales = false;
 
     Helper.instance.checkInternet().then((intenet) {
-      if(intenet != null && intenet) {
+      if(intenet) {
         onListProducts(GlobalVariable.merchantID);
       } else {
         DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
@@ -199,10 +230,9 @@ class _DashboardState extends State<Dashboard> {
           title: 'Dashboard',
           noShadow: true,
           onTapOne: () { 
-            ExtendedNavigator.ofRouter<ModuleRouter.Router>()
-            .pushNamed(ModuleRouter.Routes.newProduct).then((value) {
+            AutoRouter.of(context).push(ModuleRouter.NewProduct()).then((value) {
               Helper.instance.checkInternet().then((intenet) {
-                if(intenet != null && intenet) {
+                if(intenet) {
                   onListProducts(GlobalVariable.merchantID);
                 } else {
                   DialogHelper.customDialog(context, 'No connection', 'Please check your network connection', () => { Phoenix.rebirth(context) });
@@ -226,7 +256,7 @@ class _DashboardState extends State<Dashboard> {
                               color: AppColors.text,
                               fontWeight: FontWeight.w900,
                               fontSize: 21)),
-                      Text(DataSingleton.shared.productData == null || DataSingleton.shared.productData.data.isEmpty ? '0.00' : DataSingleton.shared.productData.totalProfit.toString(),
+                      Text(DataSingleton.shared.productData == null || DataSingleton.shared.productData!.data!.isEmpty ? '0.00' : DataSingleton.shared.productData!.totalProfit.toString(),
                           style: TextStyle(
                               color: AppColors.success,
                               fontWeight: FontWeight.w100,
@@ -240,17 +270,20 @@ class _DashboardState extends State<Dashboard> {
                 child: Align(
                   alignment: Alignment.center,
                   child: SizedBox(
-                    child: RaisedButton(
-                      textColor: AppColors.white,
-                      color: AppColors.label,
+                    child: ElevatedButton(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 12, bottom: 12),
+                        child: const Text('Start Sales', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0)),
+                      ),
+                      style: TextButton.styleFrom(
+                        primary: AppColors.white,
+                        backgroundColor: AppColors.label,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(21.0)),
+                      ),
                       onPressed: () {
                         onPressed('startsales');
                       },
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(21.0),),
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 12, bottom: 12),
-                        child: Text('Start Sales', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0))
-                      ),
                     ),
                   ),
                 ),
@@ -268,39 +301,39 @@ class _DashboardState extends State<Dashboard> {
               ),
               Container(padding: const EdgeInsets.symmetric(horizontal: 190.0), child: Divider(thickness: 1.0,)),
               Expanded(
-                child: DataSingleton.shared.productData == null || DataSingleton.shared.productData.data.isEmpty ? Center(child: Text('Products Not Found', style: TextStyle(fontSize: 20.0)),) : ListView.builder(
+                child: DataSingleton.shared.productData == null || DataSingleton.shared.productData!.data!.isEmpty ? Center(child: Text('Products Not Found', style: TextStyle(fontSize: 20.0)),) : ListView.builder(
                   primary: false,
-                  itemCount: DataSingleton.shared.productData.data?.length ?? 0,
+                  itemCount: DataSingleton.shared.productData!.data?.length ?? 0,
                   itemBuilder: (context, index) {
                     return Container(
                       padding: EdgeInsets.all(2),
                       child: Card(
                         child: ListTile(
-                          title: Text(DataSingleton.shared.productData.data[index].name, style: TextStyle(fontWeight: FontWeight.bold),),
+                          title: Text(DataSingleton.shared.productData!.data![index].name!, style: TextStyle(fontWeight: FontWeight.bold),),
                           subtitle: Row(
                             children: [
                               Badge(
                                 elevation: 0,
                                 toAnimate: false,
                                 shape: BadgeShape.square,
-                                badgeColor: DataSingleton.shared.productData.data[index].stockQty <= 1 ? AppColors.error : (DataSingleton.shared.productData.data[index].stockQty >= 2 && DataSingleton.shared.productData.data[index].stockQty <= 7 ? AppColors.warning : AppColors.info ),
+                                badgeColor: DataSingleton.shared.productData!.data![index].stockQty! <= 1 ? AppColors.error : (DataSingleton.shared.productData!.data![index].stockQty! >= 2 && DataSingleton.shared.productData!.data![index].stockQty! <= 7 ? AppColors.warning : AppColors.info ),
                                 borderRadius: BorderRadius.circular(4),
-                                badgeContent: Text(DataSingleton.shared.productData.data[index].stockQty.toString(), style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold))
+                                badgeContent: Text(DataSingleton.shared.productData!.data![index].stockQty.toString(), style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold))
                               ),
                               SizedBox(width: 2.0,),
                               Badge(
                                 elevation: 0,
                                 toAnimate: false,
                                 shape: BadgeShape.square,
-                                badgeColor: DataSingleton.shared.productData.data[index].isActive == 1 ? Colors.green : Colors.amber,
+                                badgeColor: DataSingleton.shared.productData!.data![index].isActive == 1 ? Colors.green : Colors.amber,
                                 borderRadius: BorderRadius.circular(4),
-                                badgeContent: DataSingleton.shared.productData.data[index].isActive == 1 ? Text('active', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)) : Text('inactive', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)),
+                                badgeContent: DataSingleton.shared.productData!.data![index].isActive == 1 ? Text('active', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)) : Text('inactive', style: TextStyle(color: Colors.black, fontSize: 9.0, fontWeight: FontWeight.bold)),
                               ),
                             ],
                           ),
-                          trailing: Text(DataSingleton.shared.productData.data[index].currencySymbol+' '+DataSingleton.shared.productData.data[index].salesPrice, style: TextStyle(color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.bold)),
+                          trailing: Text(DataSingleton.shared.productData!.data![index].currencySymbol!+' '+DataSingleton.shared.productData!.data![index].salesPrice!, style: TextStyle(color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.bold)),
                           onTap: () {
-                            onTapClicked(DataSingleton.shared.productData.data[index].id); 
+                            onTapClicked(DataSingleton.shared.productData!.data![index].id); 
                           },
                         ),
                       ),

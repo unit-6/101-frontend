@@ -9,19 +9,19 @@ import 'package:sbit_mobile/Helper/Webservice/api_manager.dart';
 import 'package:sbit_mobile/Helper/ShowDialog/dialog_helper.dart';
 import 'package:sbit_mobile/Helper/Routes/router.gr.dart' as ModuleRouter;
 
-ApiManager apiManager;
+late ApiManager apiManager;
 
 class EditProduct extends StatefulWidget {
 
-  final String vProdName;
-  final String vSalesPrice;
-  final int vStockQty;
-  final int vId;
-  final int vIsActive;
-  final String vCurrencyCode;
-  final String vCurrencySymbol;
+  final String? vProdName;
+  final String? vSalesPrice;
+  final int? vStockQty;
+  final int? vId;
+  final int? vIsActive;
+  final String? vCurrencyCode;
+  final String? vCurrencySymbol;
 
-  const EditProduct({Key key, this.vProdName, this.vSalesPrice, this.vStockQty, this.vId, this.vIsActive, this.vCurrencyCode, this.vCurrencySymbol}) : super(key: key);
+  const EditProduct({Key? key, this.vProdName, this.vSalesPrice, this.vStockQty, this.vId, this.vIsActive, this.vCurrencyCode, this.vCurrencySymbol}) : super(key: key);
 
   @override
   _EditProduct createState() => _EditProduct();
@@ -35,7 +35,7 @@ class _EditProduct extends State<EditProduct> {
 
   //===================================== [START] API SERVICES ===================================================//
  
-  Future onEditProduct(int id, String name, String salesPrice, String currencyCode, String currencySymbol, String stockQty, int isActive) async {
+  Future onEditProduct(int? id, String name, String salesPrice, String? currencyCode, String? currencySymbol, String stockQty, int? isActive) async {
     Future.delayed(Duration.zero, () => DialogHelper.loadingDialog(context));
     await apiManager.editProduct(id, name, salesPrice, currencyCode, currencySymbol, stockQty, isActive).then((res) {
       Navigator.of(context).pop();
@@ -52,7 +52,8 @@ class _EditProduct extends State<EditProduct> {
     if (status) {
       if (res['code'] == 200) {
         DialogHelper.customDialog(context, 'Success', res['message'], () { 
-        ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
+        // ExtendedNavigator.ofRouter<ModuleRouter.Router>().popUntil(ModalRoute.withName(ModuleRouter.Routes.dashboard));
+        AutoRouter.of(context).popUntilRouteWithName(ModuleRouter.Dashboard.name);
       });
       }
     } else {
@@ -64,7 +65,7 @@ class _EditProduct extends State<EditProduct> {
     if(nameCtrl.text.isNotEmpty && salePriceCtrl.text.isNotEmpty && stockQtyCtrl.text.isNotEmpty) {
       debugPrint('name=${nameCtrl.text} : salesPrice=${salePriceCtrl.text} : stockQty=${stockQtyCtrl.text}');
       Helper.instance.checkInternet().then((intenet) {
-      if(intenet != null && intenet) {
+      if(intenet) {
         onEditProduct(
           widget.vId,
           nameCtrl.text,
@@ -89,8 +90,8 @@ class _EditProduct extends State<EditProduct> {
     super.initState();
     apiManager = Provider.of<ApiManager>(context, listen: false);
 
-    nameCtrl.text = widget.vProdName;
-    salePriceCtrl.text = widget.vSalesPrice;
+    nameCtrl.text = widget.vProdName!;
+    salePriceCtrl.text = widget.vSalesPrice!;
     stockQtyCtrl.text = widget.vStockQty.toString();
   }
 
@@ -177,17 +178,20 @@ class _EditProduct extends State<EditProduct> {
                             width: double.infinity,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 32),
-                              child: RaisedButton(
-                                textColor: AppColors.white,
-                                color: AppColors.initial,
+                              child: ElevatedButton(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 12, bottom: 12),
+                                  child: const Text('Update', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0)),
+                                ),
+                                style: TextButton.styleFrom(
+                                  primary: AppColors.white,
+                                  backgroundColor: AppColors.initial,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: new BorderRadius.circular(4.0)),
+                                ),
                                 onPressed: () {
                                   onPressed();
                                 },
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0),),
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 12, bottom: 12),
-                                  child: Text('Update', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0))
-                                ),
                               ),
                             ),
                           ),

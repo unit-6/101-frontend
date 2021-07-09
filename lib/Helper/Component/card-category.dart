@@ -21,7 +21,7 @@ class CardCategory extends StatelessWidget {
         height: 252,
         width: null,
         child: GestureDetector(
-          onTap: tap,
+          onTap: tap as void Function()?,
           child: Card(
               elevation: 0.4,
               shape: RoundedRectangleBorder(
