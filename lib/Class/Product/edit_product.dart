@@ -99,7 +99,14 @@ class _EditProduct extends State<EditProduct> {
   Widget build(BuildContext context) {
     return WillPopScope(
       child: Scaffold(
-        appBar: AppBar(title: Text(''), backgroundColor: AppColors.bgColorScreen,  elevation: 0.0),
+        appBar: AppBar(
+          title: Text(''), 
+          backgroundColor: AppColors.bgColorScreen,  
+          elevation: 0.0,
+          iconTheme: IconThemeData(
+            color: Colors.black,
+          ),
+        ),
         body: SafeArea(
           child: Container(
             child: SingleChildScrollView(

@@ -7,7 +7,7 @@ class AppThemeGlobal {
     return ThemeData(
       brightness: Brightness.light,
       primaryColor: Colors.white,
-      accentColor: Colors.white,
+      colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       scaffoldBackgroundColor: AppColors.bgColorScreen,
 
@@ -18,7 +18,7 @@ class AppThemeGlobal {
       // text styling for headlines, titles, bodies of text, and more.
       textTheme: TextTheme(
         headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-        headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+        // headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
         bodyText1: TextStyle(fontSize: 20.0),
         bodyText2: TextStyle(fontSize: 14.0),
       ),

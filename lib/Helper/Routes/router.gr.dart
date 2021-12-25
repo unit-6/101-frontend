@@ -1,59 +1,59 @@
+// **************************************************************************
+// AutoRouteGenerator
+// **************************************************************************
+
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
 // AutoRouteGenerator
 // **************************************************************************
 
-import 'package:auto_route/auto_route.dart' as _i1;
-import 'package:flutter/material.dart' as _i2;
+import 'package:auto_route/auto_route.dart' as _i8;
+import 'package:flutter/material.dart' as _i9;
 
-import '../../Class/AppRoot/app_root.dart' as _i3;
-import '../../Class/Dashboard/dashboard.dart' as _i5;
-import '../../Class/Home/home.dart' as _i4;
-import '../../Class/Product/details_product.dart' as _i7;
-import '../../Class/Product/edit_product.dart' as _i8;
-import '../../Class/Product/new_product.dart' as _i6;
-import '../../Class/Sales/sales.dart' as _i9;
+import '../../Class/AppRoot/app_root.dart' as _i1;
+import '../../Class/Dashboard/dashboard.dart' as _i3;
+import '../../Class/Home/home.dart' as _i2;
+import '../../Class/Product/details_product.dart' as _i5;
+import '../../Class/Product/edit_product.dart' as _i6;
+import '../../Class/Product/new_product.dart' as _i4;
+import '../../Class/Sales/sales.dart' as _i7;
 
-class AppRouter extends _i1.RootStackRouter {
-  AppRouter([_i2.GlobalKey<_i2.NavigatorState>? navigatorKey])
+class AppRouter extends _i8.RootStackRouter {
+  AppRouter([_i9.GlobalKey<_i9.NavigatorState>? navigatorKey])
       : super(navigatorKey);
 
   @override
-  final Map<String, _i1.PageFactory> pagesMap = {
-    AppRoot.name: (routeData) => _i1.MaterialPageX<dynamic>(
-        routeData: routeData,
-        builder: (_) {
-          return _i3.AppRoot();
-        }),
-    Home.name: (routeData) => _i1.MaterialPageX<dynamic>(
-        routeData: routeData,
-        builder: (_) {
-          return _i4.Home();
-        }),
-    Dashboard.name: (routeData) => _i1.MaterialPageX<dynamic>(
-        routeData: routeData,
-        builder: (_) {
-          return _i5.Dashboard();
-        }),
-    NewProduct.name: (routeData) => _i1.MaterialPageX<dynamic>(
-        routeData: routeData,
-        builder: (_) {
-          return _i6.NewProduct();
-        }),
-    DetailsProduct.name: (routeData) => _i1.MaterialPageX<dynamic>(
-        routeData: routeData,
-        builder: (data) {
-          final args = data.argsAs<DetailsProductArgs>(
-              orElse: () => const DetailsProductArgs());
-          return _i7.DetailsProduct(key: args.key, productId: args.productId);
-        }),
-    EditProduct.name: (routeData) => _i1.MaterialPageX<dynamic>(
-        routeData: routeData,
-        builder: (data) {
-          final args = data.argsAs<EditProductArgs>(
-              orElse: () => const EditProductArgs());
-          return _i8.EditProduct(
+  final Map<String, _i8.PageFactory> pagesMap = {
+    AppRoot.name: (routeData) {
+      return _i8.MaterialPageX<dynamic>(
+          routeData: routeData, child: _i1.AppRoot());
+    },
+    Home.name: (routeData) {
+      return _i8.MaterialPageX<dynamic>(
+          routeData: routeData, child: _i2.Home());
+    },
+    Dashboard.name: (routeData) {
+      return _i8.MaterialPageX<dynamic>(
+          routeData: routeData, child: _i3.Dashboard());
+    },
+    NewProduct.name: (routeData) {
+      return _i8.MaterialPageX<dynamic>(
+          routeData: routeData, child: _i4.NewProduct());
+    },
+    DetailsProduct.name: (routeData) {
+      final args = routeData.argsAs<DetailsProductArgs>(
+          orElse: () => const DetailsProductArgs());
+      return _i8.MaterialPageX<dynamic>(
+          routeData: routeData,
+          child: _i5.DetailsProduct(key: args.key, productId: args.productId));
+    },
+    EditProduct.name: (routeData) {
+      final args = routeData.argsAs<EditProductArgs>(
+          orElse: () => const EditProductArgs());
+      return _i8.MaterialPageX<dynamic>(
+          routeData: routeData,
+          child: _i6.EditProduct(
               key: args.key,
               vProdName: args.vProdName,
               vSalesPrice: args.vSalesPrice,
@@ -61,54 +61,63 @@ class AppRouter extends _i1.RootStackRouter {
               vId: args.vId,
               vIsActive: args.vIsActive,
               vCurrencyCode: args.vCurrencyCode,
-              vCurrencySymbol: args.vCurrencySymbol);
-        }),
-    Sales.name: (routeData) => _i1.MaterialPageX<dynamic>(
-        routeData: routeData,
-        builder: (_) {
-          return _i9.Sales();
-        })
+              vCurrencySymbol: args.vCurrencySymbol));
+    },
+    Sales.name: (routeData) {
+      return _i8.MaterialPageX<dynamic>(
+          routeData: routeData, child: _i7.Sales());
+    }
   };
 
   @override
-  List<_i1.RouteConfig> get routes => [
-        _i1.RouteConfig(AppRoot.name, path: '/'),
-        _i1.RouteConfig(Home.name, path: '/Home'),
-        _i1.RouteConfig(Dashboard.name, path: '/Dashboard'),
-        _i1.RouteConfig(NewProduct.name, path: '/new-product'),
-        _i1.RouteConfig(DetailsProduct.name, path: '/details-product'),
-        _i1.RouteConfig(EditProduct.name, path: '/edit-product'),
-        _i1.RouteConfig(Sales.name, path: '/Sales')
+  List<_i8.RouteConfig> get routes => [
+        _i8.RouteConfig(AppRoot.name, path: '/'),
+        _i8.RouteConfig(Home.name, path: '/Home'),
+        _i8.RouteConfig(Dashboard.name, path: '/Dashboard'),
+        _i8.RouteConfig(NewProduct.name, path: '/new-product'),
+        _i8.RouteConfig(DetailsProduct.name, path: '/details-product'),
+        _i8.RouteConfig(EditProduct.name, path: '/edit-product'),
+        _i8.RouteConfig(Sales.name, path: '/Sales')
       ];
 }
 
-class AppRoot extends _i1.PageRouteInfo {
-  const AppRoot() : super(name, path: '/');
+/// generated route for
+/// [_i1.AppRoot]
+class AppRoot extends _i8.PageRouteInfo<void> {
+  const AppRoot() : super(AppRoot.name, path: '/');
 
   static const String name = 'AppRoot';
 }
 
-class Home extends _i1.PageRouteInfo {
-  const Home() : super(name, path: '/Home');
+/// generated route for
+/// [_i2.Home]
+class Home extends _i8.PageRouteInfo<void> {
+  const Home() : super(Home.name, path: '/Home');
 
   static const String name = 'Home';
 }
 
-class Dashboard extends _i1.PageRouteInfo {
-  const Dashboard() : super(name, path: '/Dashboard');
+/// generated route for
+/// [_i3.Dashboard]
+class Dashboard extends _i8.PageRouteInfo<void> {
+  const Dashboard() : super(Dashboard.name, path: '/Dashboard');
 
   static const String name = 'Dashboard';
 }
 
-class NewProduct extends _i1.PageRouteInfo {
-  const NewProduct() : super(name, path: '/new-product');
+/// generated route for
+/// [_i4.NewProduct]
+class NewProduct extends _i8.PageRouteInfo<void> {
+  const NewProduct() : super(NewProduct.name, path: '/new-product');
 
   static const String name = 'NewProduct';
 }
 
-class DetailsProduct extends _i1.PageRouteInfo<DetailsProductArgs> {
-  DetailsProduct({_i2.Key? key, int? productId})
-      : super(name,
+/// generated route for
+/// [_i5.DetailsProduct]
+class DetailsProduct extends _i8.PageRouteInfo<DetailsProductArgs> {
+  DetailsProduct({_i9.Key? key, int? productId})
+      : super(DetailsProduct.name,
             path: '/details-product',
             args: DetailsProductArgs(key: key, productId: productId));
 
@@ -118,14 +127,21 @@ class DetailsProduct extends _i1.PageRouteInfo<DetailsProductArgs> {
 class DetailsProductArgs {
   const DetailsProductArgs({this.key, this.productId});
 
-  final _i2.Key? key;
+  final _i9.Key? key;
 
   final int? productId;
+
+  @override
+  String toString() {
+    return 'DetailsProductArgs{key: $key, productId: $productId}';
+  }
 }
 
-class EditProduct extends _i1.PageRouteInfo<EditProductArgs> {
+/// generated route for
+/// [_i6.EditProduct]
+class EditProduct extends _i8.PageRouteInfo<EditProductArgs> {
   EditProduct(
-      {_i2.Key? key,
+      {_i9.Key? key,
       String? vProdName,
       String? vSalesPrice,
       int? vStockQty,
@@ -133,7 +149,7 @@ class EditProduct extends _i1.PageRouteInfo<EditProductArgs> {
       int? vIsActive,
       String? vCurrencyCode,
       String? vCurrencySymbol})
-      : super(name,
+      : super(EditProduct.name,
             path: '/edit-product',
             args: EditProductArgs(
                 key: key,
@@ -159,7 +175,7 @@ class EditProductArgs {
       this.vCurrencyCode,
       this.vCurrencySymbol});
 
-  final _i2.Key? key;
+  final _i9.Key? key;
 
   final String? vProdName;
 
@@ -174,10 +190,17 @@ class EditProductArgs {
   final String? vCurrencyCode;
 
   final String? vCurrencySymbol;
+
+  @override
+  String toString() {
+    return 'EditProductArgs{key: $key, vProdName: $vProdName, vSalesPrice: $vSalesPrice, vStockQty: $vStockQty, vId: $vId, vIsActive: $vIsActive, vCurrencyCode: $vCurrencyCode, vCurrencySymbol: $vCurrencySymbol}';
+  }
 }
 
-class Sales extends _i1.PageRouteInfo {
-  const Sales() : super(name, path: '/Sales');
+/// generated route for
+/// [_i7.Sales]
+class Sales extends _i8.PageRouteInfo<void> {
+  const Sales() : super(Sales.name, path: '/Sales');
 
   static const String name = 'Sales';
 }
