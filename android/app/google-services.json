@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "378382876161",
+    "project_id": "sbit-78d3f",
+    "storage_bucket": "sbit-78d3f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:378382876161:android:e856cd658de6c5565f4a00",
+        "android_client_info": {
+          "package_name": "com.sbit.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "378382876161-8c5ira6rv9koou22or1jnaod94e4qtog.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXdNJWBojIek51ucvy1j8XthGy1f3p8fQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "378382876161-8c5ira6rv9koou22or1jnaod94e4qtog.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
